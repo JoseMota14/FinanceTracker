@@ -2,7 +2,14 @@
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using TransactionWebApi.Context;
+using TransactionWebApi.CQRS;
+using TransactionWebApi.CQRS.Commands;
+using TransactionWebApi.CQRS.Dispatchers;
+using TransactionWebApi.CQRS.Handlers;
+using TransactionWebApi.CQRS.Queries;
+using TransactionWebApi.DTO;
 using TransactionWebApi.Models.Validation;
 using TransactionWebApi.Repository;
 using TransactionWebApi.Services;
@@ -28,12 +35,21 @@ namespace TransactionWebApi.Infra
                 });
             });
 
-
             services.AddDbContext<FinanceDbContext>(options =>
-               options.UseInMemoryDatabase(databaseName: "InMemoryDatabase"));
+               options.UseInMemoryDatabase(databaseName: "InMemoryDatabase"))
+                ;
 
+            
+
+            services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
-            services.AddScoped<TransactionService>();
+
+            services.AddScoped<IQueryHandler<GetAllTransactionsQuery, IEnumerable<TransactionDto>>, TransactionQueryHandler>();
+
+            services.AddScoped<ICommandHandler<CreateTransactionCommand, TransactionDto>, TransactionCommandHandler>();
+
+            services.AddScoped<ICommandDispatcher, CommandDispatcher>();
+            services.AddScoped<IQueryDispatcher, QueryDispatcher>();
 
             services.AddControllers();
             

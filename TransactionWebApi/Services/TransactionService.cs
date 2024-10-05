@@ -1,43 +1,34 @@
-﻿using TransactionWebApi.Models;
+﻿using TransactionWebApi.CQRS.Commands;
+using TransactionWebApi.CQRS.Dispatchers;
+using TransactionWebApi.CQRS.Queries;
+using TransactionWebApi.DTO;
+using TransactionWebApi.Models;
 using TransactionWebApi.Repository;
 
 namespace TransactionWebApi.Services
 {
-    public class TransactionService
+    public class TransactionService : ITransactionService
     {
-        private readonly ITransactionRepository _transactionRepository;
+        private readonly ICommandDispatcher _commandDispatcher;
+        private readonly IQueryDispatcher _queryDispatcher;
 
-        public TransactionService(ITransactionRepository transactionRepository)
+        public TransactionService(ICommandDispatcher commandDispatcher, IQueryDispatcher queryDispatcher)
         {
-            _transactionRepository = transactionRepository;
+            _commandDispatcher = commandDispatcher;
+            _queryDispatcher = queryDispatcher;
         }
 
-        public async Task<IEnumerable<Transaction>> GetAllTransactionsAsync()
+        public async  Task<IEnumerable<TransactionDto>> GetAllTransactions()
         {
-            return await _transactionRepository.GetAllTransactionsAsync();
+            var transactions = await _queryDispatcher.Dispatch<GetAllTransactionsQuery, IEnumerable<TransactionDto>>(new GetAllTransactionsQuery());
+            return transactions;
         }
 
-        public async Task<Transaction> GetTransactionByIdAsync(Guid id)
+        public async Task<TransactionDto> CreateTransaction(CreateTransactionDto dto)
         {
-            return await _transactionRepository.GetTransactionByIdAsync(id);
-        }
 
-        public async Task AddTransactionAsync(Transaction transaction)
-        {
-            await _transactionRepository.AddTransactionAsync(transaction);
-            await _transactionRepository.SaveChangesAsync();
-        }
-
-        public async Task UpdateTransactionAsync(Transaction transaction)
-        {
-            await _transactionRepository.UpdateTransactionAsync(transaction);
-            await _transactionRepository.SaveChangesAsync();
-        }
-
-        public async Task DeleteTransactionAsync(Guid id)
-        {
-            await _transactionRepository.DeleteTransactionAsync(id);
-            await _transactionRepository.SaveChangesAsync();
+            var transaction = await _commandDispatcher.Dispatch<CreateTransactionCommand, TransactionDto>(new CreateTransactionCommand(dto));
+            return transaction;
         }
     }
 
