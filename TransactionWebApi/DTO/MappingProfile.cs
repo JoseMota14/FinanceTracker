@@ -11,6 +11,9 @@ namespace TransactionWebApi.DTO
             CreateMap<Transaction, TransactionDto>();
             CreateMap<CreateTransactionDto, Transaction>();
             CreateMap<UpdateTransactionDto, Transaction>();
+
+            CreateMap<User, UserDto>();
+            CreateMap<CreateUserDto, User > ();
         }
     }
 

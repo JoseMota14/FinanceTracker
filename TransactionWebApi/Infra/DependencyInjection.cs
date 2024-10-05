@@ -39,7 +39,8 @@ namespace TransactionWebApi.Infra
                options.UseInMemoryDatabase(databaseName: "InMemoryDatabase"))
                 ;
 
-            
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();

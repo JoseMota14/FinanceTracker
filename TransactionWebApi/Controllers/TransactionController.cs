@@ -12,7 +12,6 @@ namespace TransactionWebApi.Controllers
     {
         private readonly ITransactionService _transactionService;
 
-
         public TransactionController(ITransactionService transactionService)
         {
             _transactionService = transactionService;

@@ -9,6 +9,9 @@
         public string Type { get; set; }
         public string Description { get; set; }
 
+        public int UserId { get; set; }
+        public User User { get; set; } 
+
         public virtual Task OnAddingAsync()
         {
             return Task.CompletedTask;
