@@ -1,13 +1,25 @@
 import { configureStore } from "@reduxjs/toolkit";
-import TaskSlice from "./tasks/TasksSlice";
+import { setupListeners } from "@reduxjs/toolkit/query";
+import { transactionsApi } from "./transactions/TransactionsApi";
+import TransactionSlice from "./transactions/TransactionsSlice";
 
 const store = configureStore({
   reducer: {
-    tasks: TaskSlice,
+    [transactionsApi.reducerPath]: transactionsApi.reducer,
+    transactions: TransactionSlice,
+  },
+  middleware: (getDefaultMiddleware) => {
+    return getDefaultMiddleware().concat(transactionsApi.middleware);
   },
 });
+setupListeners(store.dispatch);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 export default store;
+
+export {
+  useGetTransactionsQuery,
+  useTransactionUsersMutation,
+} from "./transactions/TransactionsApi";

@@ -3,7 +3,7 @@ import Layout from "../components/Layout";
 import DashboardPage from "../pages/DashboardPage";
 import ErrorPage from "../pages/ErrorPage";
 import LoginPage from "../pages/LoginPage";
-import TaskPage from "../pages/TaskPage";
+import TransactionPage from "../pages/TransactionPage";
 
 const router = (isLoggedIn: boolean) => {
   return createBrowserRouter([
@@ -17,8 +17,8 @@ const router = (isLoggedIn: boolean) => {
           element: <DashboardPage />,
         },
         {
-          path: "/tasks",
-          element: <TaskPage />,
+          path: "/transactions",
+          element: <TransactionPage />,
         },
       ],
     },

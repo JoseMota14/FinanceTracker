@@ -5,11 +5,15 @@ export const LayoutContainer = styled.div`
 `;
 
 export const NavbarWrapper = styled.div`
-  height: 65px;
+  height: 5%;
 `;
 
 export const MainContent = styled.main`
-  height: 100%;
-  margin: 0 1rem;
+  height: 95%;
+  margin: 6rem 1rem;
   width: auto;
+
+  @media (max-width: 768px) {
+    margin: 1rem 1rem;
+  }
 `;

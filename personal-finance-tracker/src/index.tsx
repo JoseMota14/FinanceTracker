@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import App from "./App";
-import { AuthProvider } from "./contexts";
+import { AuthProvider, ThemesProvider } from "./contexts";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import store from "./store";
@@ -14,7 +14,9 @@ root.render(
   <Suspense fallback={<div>Loading...</div>}>
     <Provider store={store}>
       <AuthProvider>
-        <App />
+        <ThemesProvider>
+          <App />
+        </ThemesProvider>
       </AuthProvider>
     </Provider>
   </Suspense>

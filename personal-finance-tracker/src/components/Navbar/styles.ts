@@ -7,11 +7,12 @@ export const Nav = styled.nav`
   justify-content: space-around;
   align-items: center;
   padding: 10px;
-  background-color: #333;
   color: white;
   position: fixed;
   width: 100%;
   z-index: 1000;
+
+  background-color: ${(props) => props.theme.colors.background};
 
   top: 0;
 

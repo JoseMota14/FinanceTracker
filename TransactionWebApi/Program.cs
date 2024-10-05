@@ -26,6 +26,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FinanceTrackerApi v1"));
 }
 
+app.UseCors();
 app.UseHttpsRedirection();
 app.MapControllers();
 app.UseRouting();

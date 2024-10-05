@@ -19,7 +19,7 @@ const NavbarItem: React.FC<NavbarItemProps<IconType>> = ({
     <StyledButton isActive={isActive} {...rest}>
       <IconWrapper isActive={isActive}>
         {Icon && <Icon size={22} />}
-        {label}
+        <a>{label}</a>
       </IconWrapper>
       <ActiveIndicator isActive={isActive} />
     </StyledButton>
