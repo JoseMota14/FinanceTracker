@@ -4,8 +4,6 @@ using TransactionWebApi.CQRS.Dispatchers;
 using TransactionWebApi.DTO;
 using TransactionWebApi.Models;
 using TransactionWebApi.Repository;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace TransactionWebApi.Services
 {
@@ -34,6 +32,17 @@ namespace TransactionWebApi.Services
         {
             var user = await _userRepository.GetUserByIdAsync(userId);
             return user;
+        }
+
+        public async Task<User> GetUserByEmail(string email)
+        {
+            var user = await _userRepository.GetUserByEmail(email);
+            return user;
+        }
+
+        public async Task<IEnumerable<User>> GetAllUsers()
+        {
+            return await _userRepository.GetAllUsersAsync();
         }
     }
 }

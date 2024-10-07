@@ -1,10 +1,16 @@
-﻿namespace TransactionWebApi.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TransactionWebApi.Models
 {
     public class User
     {
-        public int UserId { get; set; }
-        public string UserName { get; set; }
+        [Key]
+        public string Email { get; set; }
+        public byte[] PasswordHash { get; set; }
+        public byte[] PasswordSalt { get; set; }
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiryTime { get; set; }
 
-        public ICollection<Transaction> Transactions { get; set; }
+        public ICollection<Transaction>? Transactions { get; set; }
     }
 }

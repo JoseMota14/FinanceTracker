@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TransactionWebApi.CQRS.Dispatchers;
 using TransactionWebApi.DTO;
 using TransactionWebApi.Models;
@@ -8,6 +9,7 @@ namespace TransactionWebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class TransactionController : ControllerBase
     {
         private readonly ITransactionService _transactionService;

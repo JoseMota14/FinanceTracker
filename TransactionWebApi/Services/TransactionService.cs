@@ -2,8 +2,6 @@
 using TransactionWebApi.CQRS.Dispatchers;
 using TransactionWebApi.CQRS.Queries;
 using TransactionWebApi.DTO;
-using TransactionWebApi.Models;
-using TransactionWebApi.Repository;
 
 namespace TransactionWebApi.Services
 {
@@ -24,10 +22,21 @@ namespace TransactionWebApi.Services
             return transactions;
         }
 
+        public async Task<TransactionDto> GetTransactionById(Guid transactionId)
+        {
+            var transaction = await _queryDispatcher.Dispatch<GetTransactionByIdQuery, TransactionDto>(new GetTransactionByIdQuery(transactionId));
+            return transaction;
+        }
+
         public async Task<TransactionDto> CreateTransaction(CreateTransactionDto dto)
         {
-
             var transaction = await _commandDispatcher.Dispatch<CreateTransactionCommand, TransactionDto>(new CreateTransactionCommand(dto));
+            return transaction;
+        }
+
+        public async Task<TransactionDto> UpdateTransaction(UpdateTransactionDto dto)
+        {
+            var transaction = await _commandDispatcher.Dispatch<UpdateTransactionCommand, TransactionDto>(new UpdateTransactionCommand(dto));
             return transaction;
         }
     }
