@@ -20,6 +20,6 @@ export type AppDispatch = typeof store.dispatch;
 export default store;
 
 export {
+  useAddTransactionMutation,
   useGetTransactionsQuery,
-  useTransactionUsersMutation,
 } from "./transactions/TransactionsApi";

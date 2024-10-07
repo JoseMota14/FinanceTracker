@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Transaction } from "../../entities/Transaction";
+import { formatDate } from "../../utils/Date";
 import { notifyError, notifySuccess } from "../../utils/Notify";
 
 const url: string = "https://localhost:7085/api/";
@@ -14,6 +15,11 @@ export const transactionsApi = createApi({
       transformResponse: (response: any) =>
         response.map((attributes: any) => ({
           transactionId: attributes.transactionId,
+          category: attributes.category,
+          purchaceDate: formatDate(attributes.purchaseDate),
+          value: attributes.value,
+          type: attributes.type,
+          description: attributes.description,
         })),
       providesTags: (result) =>
         result
@@ -31,9 +37,9 @@ export const transactionsApi = createApi({
         }
       },
     }),
-    transactionUsers: builder.mutation<void, { body: any; headers: any }>({
+    addTransaction: builder.mutation<void, { body: any; headers: any }>({
       query: ({ body, headers }) => ({
-        url: "transation",
+        url: "Transaction",
         method: "POST",
         body,
         headers,
@@ -69,5 +75,5 @@ export const transactionsApi = createApi({
   }),
 });
 
-export const { useGetTransactionsQuery, useTransactionUsersMutation } =
+export const { useGetTransactionsQuery, useAddTransactionMutation } =
   transactionsApi;

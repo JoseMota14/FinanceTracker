@@ -20,7 +20,7 @@ export const TypeSchema = z.enum(["income", "expense"]);
 export const TransactionSchema = z.object({
   transactionId: z.string(),
   category: CategorySchema,
-  purchaceDate: z.date(),
+  purchaceDate: z.string(),
   value: z.number().min(0, { message: "Value must be a positive number" }),
   type: TypeSchema,
   description: z.string().optional(),

@@ -21,7 +21,7 @@ export default function ExpenseCard({ data }: CardProps<Transaction>) {
         <Amount type={data.type}>${data.value.toFixed(2)}</Amount>
       </CardHeader>
       <CardFooter>
-        <Date>{"21/21/21"}</Date>
+        <Date>{data.purchaceDate}</Date>
         <Type type={data.type}>{data.type}</Type>
       </CardFooter>
     </Card>

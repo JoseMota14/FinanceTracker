@@ -5,9 +5,13 @@ import { Error, Form, Input, Label, Select, SubmitButton } from "./styles";
 
 interface TransactionFormProps {
   onSubmit: (data: Transaction) => void;
+  onCancel: () => void;
 }
 
-export default function TransactionForm({ onSubmit }: TransactionFormProps) {
+export default function TransactionForm({
+  onSubmit,
+  onCancel,
+}: TransactionFormProps) {
   const {
     register,
     handleSubmit,
@@ -49,6 +53,9 @@ export default function TransactionForm({ onSubmit }: TransactionFormProps) {
       {errors.description && <Error>{errors.description.message}</Error>}
 
       <SubmitButton type="submit">Submit Transaction</SubmitButton>
+      <SubmitButton type="button" onClick={onCancel}>
+        Cancel Transaction
+      </SubmitButton>
     </Form>
   );
 }
