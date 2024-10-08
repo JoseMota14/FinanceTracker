@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import { useState } from "react";
 
 function getCookie(name: string) {
@@ -55,3 +56,7 @@ export function useCookie(
 
   return [cookieValue, setCookie, removeCookie] as const;
 }
+
+export const getCookieValue = (name: string): string => {
+  return Cookies.get(name) || "";
+};

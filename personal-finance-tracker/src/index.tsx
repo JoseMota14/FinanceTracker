@@ -12,13 +12,13 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <Suspense fallback={<div>Loading...</div>}>
-    <Provider store={store}>
-      <AuthProvider>
+    <AuthProvider>
+      <Provider store={store}>
         <ThemesProvider>
           <App />
         </ThemesProvider>
-      </AuthProvider>
-    </Provider>
+      </Provider>
+    </AuthProvider>
   </Suspense>
 );
 

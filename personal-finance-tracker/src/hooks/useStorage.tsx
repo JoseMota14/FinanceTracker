@@ -29,3 +29,10 @@ export function useStorage<T>(key: string, initialValue: T) {
 
   return [storedValue, setValue] as const;
 }
+
+export const getStoredValue = (name: string): string => {
+  if (typeof window !== "undefined") {
+    return window.sessionStorage.getItem(name) || "";
+  }
+  return "";
+};

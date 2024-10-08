@@ -1,13 +1,24 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Transaction } from "../../entities/Transaction";
+import { getStoredValue } from "../../hooks/useStorage";
 import { formatDate } from "../../utils/Date";
-import { notifyError, notifySuccess } from "../../utils/Notify";
 
-const url: string = "https://localhost:7085/api/";
+const BASE_URL: string = "https://localhost:7085/api/";
 
+// Create the API without directly accessing AuthContext
 export const transactionsApi = createApi({
   reducerPath: "transactionsApi",
-  baseQuery: fetchBaseQuery({ baseUrl: url }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: BASE_URL,
+    prepareHeaders: (headers, { getState }) => {
+      const token = getStoredValue("accessToken");
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+
+      return headers;
+    },
+  }),
   tagTypes: ["Transaction"],
   endpoints: (builder) => ({
     getTransactions: builder.query<Transaction[], void>({
@@ -23,54 +34,22 @@ export const transactionsApi = createApi({
         })),
       providesTags: (result) =>
         result
-          ? result.map(({ transactionId }) => ({
-              type: "Transaction",
-              id: transactionId,
-            }))
-          : [{ type: "Transaction" }],
-      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
-        try {
-          await queryFulfilled;
-        } catch (error) {
-          console.error("Failed to fetch transactions:", error);
-          notifyError("Failed to fetch transactions");
-        }
-      },
+          ? [
+              ...result.map(({ transactionId }) => ({
+                type: "Transaction" as const,
+                id: transactionId,
+              })),
+              { type: "Transaction", id: "LIST" },
+            ]
+          : [{ type: "Transaction", id: "LIST" }],
     }),
-    addTransaction: builder.mutation<void, { body: any; headers: any }>({
-      query: ({ body, headers }) => ({
+    addTransaction: builder.mutation<void, { body: any }>({
+      query: ({ body }) => ({
         url: "Transaction",
         method: "POST",
         body,
-        headers,
       }),
-      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
-        try {
-          await queryFulfilled;
-          notifySuccess(`transactions updated successfully`);
-        } catch (error) {
-          console.error("Transaction failed:", error);
-          notifyError("Failed to update transactions");
-        }
-      },
-      invalidatesTags: (result, error, arg) => {
-        if (!arg.body || !Array.isArray(arg.body)) {
-          return [{ type: "Transaction" }];
-        }
-
-        const tags = arg.body
-          .filter((transaction: Transaction) => !!transaction.transactionId)
-          .map((transaction: Transaction) => ({
-            type: "Transaction" as const,
-            id: transaction.transactionId,
-          }));
-
-        if (tags.length === 0) {
-          return [{ type: "Transaction" }];
-        }
-
-        return tags;
-      },
+      invalidatesTags: [{ type: "Transaction", id: "LIST" }],
     }),
   }),
 });

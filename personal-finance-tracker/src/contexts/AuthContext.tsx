@@ -1,70 +1,137 @@
-import { createContext, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 import { useCookie } from "../hooks/useCookie";
 import { useStorage } from "../hooks/useStorage";
 
 export interface iAuthContext {
   isLoggedIn: boolean;
-  changeUser: (email: string) => void;
+  email: string | null;
+  accessToken: string;
+  changeEmail: (email: string) => void;
   changeRefreshToken: (token: string) => void;
-  changeAuthToken: (token: string) => void;
+  changeAccessToken: (token: string) => void;
   changeIsLoggedIn: (value: boolean) => void;
+  logout: () => void;
+  successLogin: (
+    email: string,
+    refreshToken: string,
+    accessToken: string
+  ) => void;
+  refreshAccessToken: () => Promise<string>;
 }
 
 export interface iAuthProvider {
-  children: any;
+  children: React.ReactNode;
 }
 
 const AuthContext = createContext({} as iAuthContext);
 
 function AuthProvider({ children }: iAuthProvider) {
-  const [user, setUser, removeUserLocal] = useCookie("email", {} as string, {
-    path: "/",
-    secure: true,
-    sameSite: "Strict",
-    httpOnly: true,
-  });
+  const [refreshToken, setRefreshToken, removeRefreshToken] = useCookie(
+    "refreshToken",
+    "",
+    {
+      path: "/",
+      secure: true,
+      sameSite: "Strict",
+      httpOnly: true,
+    }
+  );
 
-  const [token, setRefreshToken, removeToken] = useCookie("refreshToken", "", {
-    path: "/",
-    secure: true,
-    sameSite: "Strict",
-    httpOnly: true,
-  });
+  const [email, setEmail] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+  const [accessToken, setAccessToken] = useStorage("accessToken", "");
 
-  function changeUser(email: string) {
-    setUser(email);
-  }
-  function changeRefreshToken(email: string) {
-    setRefreshToken(email);
-  }
+  useEffect(() => {
+    const storedEmail = sessionStorage.getItem("userEmail");
+    if (storedEmail && refreshToken) {
+      setEmail(storedEmail);
+      setIsLoggedIn(true);
+    }
+  }, [refreshToken]);
 
-  function changeIsLoggedIn(value: boolean) {
+  const changeEmail = useCallback((newEmail: string) => {
+    setEmail(newEmail);
+    sessionStorage.setItem("userEmail", newEmail);
+  }, []);
+
+  const changeRefreshToken = useCallback(
+    (token: string) => {
+      setRefreshToken(token);
+    },
+    [setRefreshToken]
+  );
+
+  const changeAccessToken = useCallback(
+    (token: string) => {
+      setAccessToken(token);
+    },
+    [setAccessToken]
+  );
+
+  const changeIsLoggedIn = useCallback((value: boolean) => {
     setIsLoggedIn(value);
-  }
+  }, []);
 
-  const [authToken, setAuthToken] = useStorage("authToken", {} as string);
-
-  function changeAuthToken(token: string) {
-    setAuthToken(token);
-  }
-
-  function Logout() {
-    removeUserLocal();
-    removeToken();
-    setAuthToken("0");
+  const logout = useCallback(() => {
+    removeRefreshToken();
+    setAccessToken("");
+    sessionStorage.removeItem("userEmail");
+    setEmail(null);
     setIsLoggedIn(false);
-  }
+  }, [removeRefreshToken, setAccessToken]);
+
+  const successLogin = useCallback(
+    (email: string, refreshToken: string, accessToken: string) => {
+      setEmail(email);
+      setRefreshToken(refreshToken);
+      setAccessToken(accessToken);
+      setIsLoggedIn(true);
+      sessionStorage.setItem("userEmail", email);
+    },
+    [setEmail, setRefreshToken, setAccessToken, setIsLoggedIn]
+  );
+
+  const refreshAccessToken = useCallback(async (): Promise<string> => {
+    try {
+      // Replace this URL with your actual refresh token endpoint
+      const response = await fetch("https://your-api.com/refresh-token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ refreshToken }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to refresh token");
+      }
+
+      const data = await response.json();
+      const newAccessToken = data.accessToken;
+
+      setAccessToken(newAccessToken);
+      return newAccessToken;
+    } catch (error) {
+      console.error("Error refreshing token:", error);
+      logout();
+      throw error;
+    }
+  }, [refreshToken, setAccessToken, logout]);
 
   return (
     <AuthContext.Provider
       value={{
-        isLoggedIn: isLoggedIn,
-        changeUser,
+        isLoggedIn,
+        email,
+        accessToken,
+        changeEmail,
         changeRefreshToken,
-        changeAuthToken,
+        changeAccessToken,
         changeIsLoggedIn,
+        logout,
+        refreshAccessToken,
+        successLogin,
       }}
     >
       {children}

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import { Button } from "../components/Shared/Button";
+import useAuth from "../hooks/useAuth";
 import { notifyError, notifySuccess } from "../utils/Notify";
 
 interface AuthFormData {
@@ -20,6 +21,8 @@ export default function AuthPage() {
     watch,
   } = useForm<AuthFormData>();
 
+  const { email, changeEmail, successLogin } = useAuth();
+
   const onSubmit = async (data: AuthFormData) => {
     try {
       const endpoint = isLogin
@@ -28,6 +31,13 @@ export default function AuthPage() {
       const response = await axios.post(endpoint, data);
       console.log(response.status);
       if (response.status === 200) {
+        if (isLogin) {
+          successLogin(
+            data.email,
+            response.data.refreshToken,
+            response.data.token
+          );
+        }
       }
       if (response.data.token) {
       }

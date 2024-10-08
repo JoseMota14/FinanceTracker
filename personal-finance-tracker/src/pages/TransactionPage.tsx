@@ -22,13 +22,13 @@ export default function TransactionPage() {
     error,
   } = useGetTransactionsQuery();
 
-  const [isFormVisible, setIsFormVisible] = useState(false); // State to control form visibility
+  const [isFormVisible, setIsFormVisible] = useState(false);
 
   useEffect(() => {
     if (error) {
       notifyError("Error while fetching transactions");
     } else if (fetchTransactions) {
-      dispatch(setTransactions(fetchTransactions)); // Correctly dispatching fetched transactions
+      dispatch(setTransactions(fetchTransactions));
     }
   }, [fetchTransactions, error, dispatch]);
 

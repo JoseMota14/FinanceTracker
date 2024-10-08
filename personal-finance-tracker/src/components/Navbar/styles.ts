@@ -25,8 +25,8 @@ export const Nav = styled.nav`
 export const Dropdown = styled.div`
   position: absolute;
   top: 60px;
-  right: 20px;
-  background-color: white;
+  right: 80px;
+  background-color: black;
   border-radius: 4px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -48,6 +48,7 @@ export const DropdownItem = styled.div`
     margin-right: 10px;
   }
 `;
+
 export const UserIcon = styled.div`
   cursor: pointer;
   display: flex;
