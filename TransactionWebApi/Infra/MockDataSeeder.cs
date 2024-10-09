@@ -11,13 +11,14 @@ namespace TransactionWebApi.Infra
             // Check if the DB is already seeded
             if (!context.Transactions.Any())
             {
+                CreatePasswordHash("string", out byte[] passwordHash, out byte[] passwordSalt);
                 var mockUsers = new List<User>
                 {
                     new User
                     {
                         Email = "jose.mota@gmail.com",
-                        PasswordSalt = new byte[] {},
-                        PasswordHash= new byte[] {}
+                        PasswordSalt = passwordSalt,
+                        PasswordHash= passwordHash
                     }
                 };
 
@@ -78,5 +79,15 @@ namespace TransactionWebApi.Infra
                 context.SaveChanges();
             }
         }
+        public static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
+        }
     }
+
+   
 }
