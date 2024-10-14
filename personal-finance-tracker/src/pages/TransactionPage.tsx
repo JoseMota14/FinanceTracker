@@ -50,12 +50,14 @@ export default function TransactionPage() {
 
   return (
     <Container>
-      <H1>Transaction Page</H1>
+      <Row>
+        <H1>Transaction Page</H1>
+        <Button onClick={openTransactionForm}>Add Transaction</Button>
+      </Row>
       {isLoading ? (
         <Loading />
       ) : (
         <>
-          <Button onClick={openTransactionForm}>Add Transaction</Button>
           {isFormVisible && (
             <Modal>
               <ModalContent>
@@ -77,14 +79,18 @@ export default function TransactionPage() {
 
 const Container = styled.div`
   padding: 20px;
-  max-width: 500px;
   margin: 0 auto;
+`;
+
+const Row = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const H1 = styled.h1`
   font-size: 24px;
   color: ${(props) => props.theme.colors.text};
-  margin-bottom: 20px;
   @media (max-width: 768px) {
     font-size: 20px;
   }

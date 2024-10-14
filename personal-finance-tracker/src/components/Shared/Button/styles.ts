@@ -11,7 +11,6 @@ export const baseButtonStyles = css`
   font-weight: 500;
   transition: background-color 0.2s;
   outline: none;
-  ring-offset: background;
   &:focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
@@ -24,7 +23,10 @@ export const baseButtonStyles = css`
 
 // Variants for Button
 export const buttonVariantStyles = {
-  default: css``,
+  default: css`
+    border: 1px solid var(--button-border);
+    color: var(--background-color-fade);
+  `,
   outline: css`
     border: 1px solid ${({ theme }) => theme.colors.border};
     background-color: ${({ theme }) => theme.colors.background};

@@ -3,6 +3,7 @@ import { ToastContainer } from "react-toastify";
 import { ThemeProvider } from "styled-components";
 import "./App.css";
 import { darkTheme, lightTheme } from "./configs/themes";
+import { GlobalStyles } from "./GlobalStyles";
 import useAuth from "./hooks/useAuth";
 import { useTheme } from "./hooks/useTheme";
 import router from "./utils/Router";
@@ -12,6 +13,7 @@ function App() {
   const { theme } = useTheme();
   return (
     <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
+      <GlobalStyles />
       <ToastContainer />
       <RouterProvider router={router(isLoggedIn)}></RouterProvider>
     </ThemeProvider>

@@ -5,6 +5,7 @@ import { FiLogOut, FiSettings } from "react-icons/fi";
 import { GrTransaction } from "react-icons/gr";
 import { MdDashboard } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTheme } from "../../hooks/useTheme";
 import Switcher from "../Switcher";
 import NavbarItem from "./NavItem";
 import { Dropdown, DropdownItem, Nav, UserIcon } from "./styles";
@@ -22,7 +23,7 @@ const links: LinkProps<IconType>[] = [
 const UserDropdown: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
+  const { theme } = useTheme();
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -52,7 +53,7 @@ const UserDropdown: React.FC = () => {
   return (
     <div ref={dropdownRef}>
       <UserIcon onClick={() => setIsOpen(!isOpen)}>
-        <CiUser size={24} />
+        <CiUser color={theme === "dark" ? "white" : "black"} size={24} />
       </UserIcon>
       {isOpen && (
         <Dropdown>
