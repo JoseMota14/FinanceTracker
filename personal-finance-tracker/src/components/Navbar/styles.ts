@@ -1,4 +1,3 @@
-// styles/NavbarStyles.ts
 import styled from "styled-components";
 
 // Main Navigation Container

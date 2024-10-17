@@ -22,7 +22,7 @@ namespace TransactionWebApi.Utils
             var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Secret"]);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.NameIdentifier, userId) }),
+                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Email, userId) }),
                 Expires = DateTime.UtcNow.AddMinutes(15),
                 Issuer = _configuration["Jwt:Issuer"],
                 Audience = _configuration["Jwt:Audience"],

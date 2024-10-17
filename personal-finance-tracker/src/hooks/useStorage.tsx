@@ -30,6 +30,12 @@ export function useStorage<T>(key: string, initialValue: T) {
   return [storedValue, setValue] as const;
 }
 
+export const setStoreValue = (name: string, value: string) => {
+  if (typeof window !== "undefined") {
+    window.sessionStorage.setItem(name, value);
+  }
+};
+
 export const getStoredValue = (name: string): string => {
   if (typeof window !== "undefined") {
     return window.sessionStorage.getItem(name) || "";

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TransactionWebApi.DTO;
 using TransactionWebApi.Services;
-using Microsoft.AspNetCore.Mvc;
 using TransactionWebApi.Models;
 using System.Security.Claims;
 using TransactionWebApi.Exceptions;

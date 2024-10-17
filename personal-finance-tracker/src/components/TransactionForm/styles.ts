@@ -56,16 +56,30 @@ export const Select = styled.select`
 `;
 
 export const SubmitButton = styled.button`
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  outline: none;
+
+  border: 1px solid var(--button-border);
+  color: var(--background-color-fade);
+
+  &:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  &:disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
 
   &:hover {
-    background-color: #0056b3;
+    background-color: var(--background-color);
   }
 
   @media (max-width: 600px) {

@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { Transaction, TransactionSchema } from "../../entities/Transaction";
 import { Error, Form, Input, Label, Select, SubmitButton } from "./styles";
@@ -6,11 +7,13 @@ import { Error, Form, Input, Label, Select, SubmitButton } from "./styles";
 interface TransactionFormProps {
   onSubmit: (data: Transaction) => void;
   onCancel: () => void;
+  setIsFormVisible: (value: boolean) => void;
 }
 
 export default function TransactionForm({
   onSubmit,
   onCancel,
+  setIsFormVisible,
 }: TransactionFormProps) {
   const {
     register,
@@ -20,8 +23,27 @@ export default function TransactionForm({
     resolver: zodResolver(TransactionSchema),
   });
 
+  const modalRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    const clickOutside = (event: MouseEvent) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        setIsFormVisible(false);
+      }
+    };
+
+    document.addEventListener("mousedown", clickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", clickOutside);
+    };
+  }, []);
+
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form ref={modalRef} onSubmit={handleSubmit(onSubmit)}>
       <Label>Transaction ID</Label>
       <Input {...register("transactionId")} />
       {errors.transactionId && <Error>{errors.transactionId.message}</Error>}
@@ -34,8 +56,8 @@ export default function TransactionForm({
       {errors.category && <Error>{errors.category.message}</Error>}
 
       <Label>Purchase Date</Label>
-      <Input type="date" {...register("purchaceDate", { valueAsDate: true })} />
-      {errors.purchaceDate && <Error>{errors.purchaceDate.message}</Error>}
+      <Input type="date" {...register("purchaseDate", { valueAsDate: true })} />
+      {errors.purchaseDate && <Error>{errors.purchaseDate.message}</Error>}
 
       <Label>Value</Label>
       <Input type="number" {...register("value", { valueAsNumber: true })} />

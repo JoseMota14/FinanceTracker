@@ -8,6 +8,7 @@ export const GlobalStyles = createGlobalStyle`
     --text-color: ${({ theme }) => theme.colors.text};
     --button-border: ${({ theme }) => theme.button.borderColor};
     --background-color-fade: ${({ theme }) => theme.colors.backgroundFade};
+
   }
 
   body {

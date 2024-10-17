@@ -38,7 +38,7 @@ function AuthProvider({ children }: iAuthProvider) {
   );
 
   const [email, setEmail] = useState<string | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
 
   const [accessToken, setAccessToken] = useStorage("accessToken", "");
 
@@ -95,13 +95,16 @@ function AuthProvider({ children }: iAuthProvider) {
   const refreshAccessToken = useCallback(async (): Promise<string> => {
     try {
       // Replace this URL with your actual refresh token endpoint
-      const response = await fetch("https://your-api.com/refresh-token", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ refreshToken }),
-      });
+      const response = await fetch(
+        "https://localhost:7085/api/Auth/refresh-token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ refreshToken }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to refresh token");
@@ -140,3 +143,4 @@ function AuthProvider({ children }: iAuthProvider) {
 }
 
 export { AuthContext, AuthProvider };
+
