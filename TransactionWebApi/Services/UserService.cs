@@ -2,6 +2,7 @@
 using System.Transactions;
 using TransactionWebApi.CQRS.Dispatchers;
 using TransactionWebApi.DTO;
+using TransactionWebApi.Events;
 using TransactionWebApi.Models;
 using TransactionWebApi.Repository;
 
@@ -12,10 +13,17 @@ namespace TransactionWebApi.Services
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userRepository, IMapper mapper)
+        public UserService(IUserRepository userRepository, IMapper mapper, EventPublisher eventPublisher)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            eventPublisher.TransactionAdded += OnTransactionAdded;
+        }
+
+
+        private void OnTransactionAdded(object? sender, TransactionAddedEvent transaction)
+        {
+            _userRepository.AddUserTransaction(transaction);
         }
 
         public async Task<UserDto> CreateUser(CreateUserDto userDto)
@@ -44,5 +52,6 @@ namespace TransactionWebApi.Services
         {
             return await _userRepository.GetAllUsersAsync();
         }
+
     }
 }

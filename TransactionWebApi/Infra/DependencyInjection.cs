@@ -14,6 +14,7 @@ using TransactionWebApi.CQRS.Handlers;
 using TransactionWebApi.CQRS.Queries;
 using TransactionWebApi.Data;
 using TransactionWebApi.DTO;
+using TransactionWebApi.Events;
 using TransactionWebApi.Models.Validation;
 using TransactionWebApi.Repository;
 using TransactionWebApi.Services;
@@ -60,6 +61,7 @@ namespace TransactionWebApi.Infra
 
             services.AddSingleton<RefreshTokens>();
             services.AddScoped<TokenUtils>();
+            services.AddScoped<EventPublisher>();
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();

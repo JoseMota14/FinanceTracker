@@ -4,6 +4,7 @@ using TransactionWebApi.CQRS.Dispatchers;
 using TransactionWebApi.DTO;
 using TransactionWebApi.Models;
 using TransactionWebApi.Services;
+using TransactionWebApi.Utils;
 
 namespace TransactionWebApi.Controllers
 {
@@ -40,7 +41,8 @@ namespace TransactionWebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> AddTransaction([FromBody] CreateTransactionDto transaction)
         {
-            var newTransaction = await _transactionService.CreateTransaction(transaction);
+            var token = ControllerUtils.ExtractUserFromAuth(Request.Headers);
+            var newTransaction = await _transactionService.CreateTransaction(transaction, token);
             return CreatedAtAction(nameof(AddTransaction), new { id = newTransaction.TransactionId }, transaction);
         }
 

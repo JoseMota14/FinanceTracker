@@ -11,6 +11,6 @@ namespace TransactionWebApi.Models
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
 
-        public ICollection<Transaction>? Transactions { get; set; }
+        public ICollection<Transaction>? Transactions { get; set; } = new List<Transaction>();
     }
 }

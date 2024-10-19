@@ -26,4 +26,13 @@ export const TransactionSchema = z.object({
   description: z.string().optional(),
 });
 
+export const TransactionAddSchema = z.object({
+  category: CategorySchema,
+  purchaseDate: z.string(),
+  value: z.number().min(0, { message: "Value must be a positive number" }),
+  type: TypeSchema,
+  description: z.string().optional(),
+});
+
 export type Transaction = z.infer<typeof TransactionSchema>;
+export type TransactionAdd = z.infer<typeof TransactionAddSchema>;

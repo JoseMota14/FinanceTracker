@@ -5,6 +5,7 @@ import { FiLogOut, FiSettings } from "react-icons/fi";
 import { GrTransaction } from "react-icons/gr";
 import { MdDashboard } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 import { useTheme } from "../../hooks/useTheme";
 import Switcher from "../Switcher";
 import NavbarItem from "./NavItem";
@@ -23,6 +24,8 @@ const links: LinkProps<IconType>[] = [
 const UserDropdown: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { logout } = useAuth();
+
   const { theme } = useTheme();
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -46,7 +49,7 @@ const UserDropdown: React.FC = () => {
   };
 
   const handleLogoutClick = () => {
-    // Implement logout logic here
+    logout();
     setIsOpen(false);
   };
 

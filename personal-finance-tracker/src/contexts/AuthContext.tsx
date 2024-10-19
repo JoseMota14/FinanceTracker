@@ -38,7 +38,7 @@ function AuthProvider({ children }: iAuthProvider) {
   );
 
   const [email, setEmail] = useState<string | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   const [accessToken, setAccessToken] = useStorage("accessToken", "");
 
@@ -74,6 +74,7 @@ function AuthProvider({ children }: iAuthProvider) {
   }, []);
 
   const logout = useCallback(() => {
+    logoutFunction();
     removeRefreshToken();
     setAccessToken("");
     sessionStorage.removeItem("userEmail");
@@ -92,9 +93,27 @@ function AuthProvider({ children }: iAuthProvider) {
     [setEmail, setRefreshToken, setAccessToken, setIsLoggedIn]
   );
 
+  const logoutFunction = useCallback(async (): Promise<void> => {
+    try {
+      const response = await fetch("https://localhost:7085/api/Auth/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ refreshToken }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to logout");
+      }
+    } catch (error) {
+      console.error("Error logout:", error);
+      throw error;
+    }
+  }, [logout]);
+
   const refreshAccessToken = useCallback(async (): Promise<string> => {
     try {
-      // Replace this URL with your actual refresh token endpoint
       const response = await fetch(
         "https://localhost:7085/api/Auth/refresh-token",
         {
@@ -143,4 +162,3 @@ function AuthProvider({ children }: iAuthProvider) {
 }
 
 export { AuthContext, AuthProvider };
-

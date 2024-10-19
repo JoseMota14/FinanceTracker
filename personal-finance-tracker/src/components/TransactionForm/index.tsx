@@ -1,29 +1,44 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { Transaction, TransactionSchema } from "../../entities/Transaction";
+import {
+  TransactionAdd,
+  TransactionAddSchema,
+} from "../../entities/Transaction";
+import { useAddTransactionMutation } from "../../store";
 import { Error, Form, Input, Label, Select, SubmitButton } from "./styles";
 
 interface TransactionFormProps {
-  onSubmit: (data: Transaction) => void;
-  onCancel: () => void;
   setIsFormVisible: (value: boolean) => void;
 }
 
 export default function TransactionForm({
-  onSubmit,
-  onCancel,
   setIsFormVisible,
 }: TransactionFormProps) {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Transaction>({
-    resolver: zodResolver(TransactionSchema),
+  } = useForm<TransactionAdd>({
+    resolver: zodResolver(TransactionAddSchema),
   });
 
   const modalRef = useRef<HTMLFormElement>(null);
+
+  const [addTransaction] = useAddTransactionMutation();
+
+  const onCancel = () => {
+    setIsFormVisible(false);
+  };
+
+  const handleAddExpense = async (values: TransactionAdd) => {
+    try {
+      await addTransaction({ body: values }).unwrap();
+      setIsFormVisible(false);
+    } catch (error) {
+      console.error("Failed to add transaction:", error);
+    }
+  };
 
   useEffect(() => {
     const clickOutside = (event: MouseEvent) => {
@@ -43,20 +58,19 @@ export default function TransactionForm({
   }, []);
 
   return (
-    <Form ref={modalRef} onSubmit={handleSubmit(onSubmit)}>
-      <Label>Transaction ID</Label>
-      <Input {...register("transactionId")} />
-      {errors.transactionId && <Error>{errors.transactionId.message}</Error>}
-
+    <Form ref={modalRef} onSubmit={handleSubmit(handleAddExpense)}>
       <Label>Category</Label>
       <Select {...register("category")}>
-        <option value="CLOTHES">Clothes</option>
-        <option value="FOOD">Food</option>
+        <option value="Clothes">Clothes</option>
+        <option value="Food">Food</option>
       </Select>
       {errors.category && <Error>{errors.category.message}</Error>}
 
       <Label>Purchase Date</Label>
-      <Input type="date" {...register("purchaseDate", { valueAsDate: true })} />
+      <Input
+        type="date"
+        {...register("purchaseDate", { valueAsDate: false })}
+      />
       {errors.purchaseDate && <Error>{errors.purchaseDate.message}</Error>}
 
       <Label>Value</Label>

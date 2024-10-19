@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TransactionWebApi.Events;
 using TransactionWebApi.Models;
 
 namespace TransactionWebApi.Repository
@@ -12,5 +13,6 @@ namespace TransactionWebApi.Repository
         Task<User> GetUserByEmail(string email);
         Task<IEnumerable<User>> GetAllUsersAsync();
         Task SaveChangesAsync();
+        void AddUserTransaction(TransactionAddedEvent e);
     }
 }

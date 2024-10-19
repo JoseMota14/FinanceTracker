@@ -15,7 +15,8 @@ namespace TransactionWebApi.Models
                     Category = command.Transaction.Category,
                     PurchaseDate = command.Transaction.PurchaseDate,
                     Value = command.Transaction.Value,
-                    Description = command.Transaction.Description
+                    Description = command.Transaction.Description,
+                    UserEmail = command.Transaction.UserId!
                 },
                 "expense" => new ExpenseTransaction
                 {
@@ -23,7 +24,8 @@ namespace TransactionWebApi.Models
                     Category = command.Transaction.Category,
                     PurchaseDate = command.Transaction.PurchaseDate,
                     Value = command.Transaction.Value,
-                    Description = command.Transaction.Description
+                    Description = command.Transaction.Description,
+                    UserEmail = command.Transaction.UserId!
                 },
                 _ => throw new ArgumentException("Invalid transaction type")
             };

@@ -1,23 +1,14 @@
 import styled from "styled-components";
 
 export const Card = styled.div`
-  background-color: #fff;
   border-radius: 10px;
-  box-shadow: 10px 10px 20px 1px rgba(0, 0, 0, 0.5);
-  padding: 20px;
+  border: 1px solid #e0e0e0;
   margin-bottom: 20px;
   width: 100%;
   max-width: 400px;
 `;
 
 export const CardHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-`;
-
-export const CardFooter = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -44,4 +35,19 @@ export const Type = styled.p<{ type: "income" | "expense" }>`
   font-weight: bold;
   text-transform: capitalize;
   color: ${(props) => (props.type === "income" ? "#28a745" : "#dc3545")};
+`;
+
+export const ToggleButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+  align-self: flex-end;
+  font-size: 18px;
+`;
+
+export const CardFooter = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
 `;

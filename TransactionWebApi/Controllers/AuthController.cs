@@ -71,5 +71,11 @@ namespace TransactionWebApi.Controllers
                 return BadRequest("Unexpected error");
             }
         }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout([FromBody] RefreshToken model)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

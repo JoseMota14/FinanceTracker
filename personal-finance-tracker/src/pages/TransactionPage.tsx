@@ -3,7 +3,10 @@ import "react-calendar/dist/Calendar.css";
 import "react-date-picker/dist/DatePicker.css";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import ExpenseCard from "../components/ExpenseCard";
+import { Button } from "../components/Shared/Button";
 import YearMonthPicker from "../components/Shared/Datepicker";
+import TransactionForm from "../components/TransactionForm";
 import { Transaction } from "../entities/Transaction";
 import { AppDispatch, RootState, useGetTransactionsQuery } from "../store";
 import { setTransactions } from "../store/transactions/TransactionsSlice";
@@ -19,7 +22,15 @@ const transactionsMock: Transaction[] = [
     description: "Groceries",
   },
   {
-    transactionId: "2",
+    transactionId: "22",
+    category: "Food",
+    purchaseDate: "2024-10-01",
+    value: 50,
+    type: "expense",
+    description: "Groceries",
+  },
+  {
+    transactionId: "25",
     category: "Clothes",
     purchaseDate: "2024-10-03",
     value: 100,
@@ -42,11 +53,15 @@ const transactionsMock: Transaction[] = [
     type: "expense",
     description: "Restaurant",
   },
+  {
+    transactionId: "24",
+    category: "Clothes",
+    purchaseDate: "2024-10-10",
+    value: 501,
+    type: "expense",
+    description: "Groceries",
+  },
 ];
-
-type ValuePiece = Date | null;
-
-type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 export default function TransactionPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -61,8 +76,6 @@ export default function TransactionPage() {
     refetch,
   } = useGetTransactionsQuery();
 
-  const [isFormVisible, setIsFormVisible] = useState(false);
-
   useEffect(() => {
     if (error) {
       notifyError("Error while fetching transactions");
@@ -71,20 +84,18 @@ export default function TransactionPage() {
     }
   }, [fetchTransactions, error, dispatch]);
 
-  const handleAddExpense = (data: Transaction) => {
-    const newExpense: Transaction = {
-      ...data,
-    };
-    dispatch(setTransactions([...transactions, newExpense])); // Dispatching the updated transactions
-    setIsFormVisible(false); // Hide the form after successful submission
-  };
+  // const handleAddExpense = (data: Transaction) => {
+  //   const newExpense: Transaction = {
+  //     ...data,
+  //   };
+  //   dispatch(setTransactions([...transactions, newExpense])); // Dispatching the updated transactions
+  //   setIsFormVisible(false); // Hide the form after successful submission
+  // };
+
+  const [isFormVisible, setIsFormVisible] = useState(false);
 
   const openTransactionForm = () => {
     setIsFormVisible(true); // Show the form when clicking "Add Transaction"
-  };
-
-  const closeTransactionForm = () => {
-    setIsFormVisible(false); // Hide the form on cancel
   };
 
   const refreshTransactionForm = () => {
@@ -156,7 +167,6 @@ export default function TransactionPage() {
           onYearChange={(selectedYear) => setYear(selectedYear)}
           onMonthChange={(selectedMonth) => setMonth(selectedMonth)}
         />
-
         <TotalBox type="income">
           Income <span>{totals.income}</span>
         </TotalBox>
@@ -166,17 +176,6 @@ export default function TransactionPage() {
         <TotalBox type="balance">
           Balance <span>{totals.balance}</span>
         </TotalBox>
-      </Header>
-
-      <CategoryBreakdown>
-        <CategoryBox>Food: $200</CategoryBox>
-        <CategoryBox>Clothing: $100</CategoryBox>
-        <CategoryBox>General: $450</CategoryBox>
-      </CategoryBreakdown>
-    </>
-    /* 
-      <Row>
-        <H1>Transaction Page</H1>
         <Row>
           <Button variant="ghost" onClick={refreshTransactionForm}>
             Refresh
@@ -185,36 +184,43 @@ export default function TransactionPage() {
             Add Transaction
           </Button>
         </Row>
-      </Row>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <>
-          {isFormVisible && (
-            <Modal>
-              <ModalContent>
-                <TransactionForm
-                  onSubmit={handleAddExpense}
-                  onCancel={closeTransactionForm}
-                  setIsFormVisible={setIsFormVisible}
-                />
-              </ModalContent>
-            </Modal>
-          )}
-          {transactions.map((tr) => (
-            <ExpenseCard key={tr.transactionId} data={tr} />
-          ))}
-        </>
-      )}
-    */
+      </Header>
+
+      <>
+        {isFormVisible && (
+          <Modal>
+            <ModalContent>
+              <TransactionForm setIsFormVisible={setIsFormVisible} />
+            </ModalContent>
+          </Modal>
+        )}
+        <TransactionContainer>
+          <TransactionContainerType>
+            <h4>Expenses</h4>
+            {filteredTransactions
+              .filter((tr) => tr.type === "expense")
+              .map((tr) => (
+                <ExpenseCard key={tr.transactionId} data={tr} />
+              ))}
+          </TransactionContainerType>
+          <TransactionContainerType>
+            <h4>Income</h4>
+            {filteredTransactions
+              .filter((tr) => tr.type === "income")
+              .map((tr) => (
+                <ExpenseCard key={tr.transactionId} data={tr} />
+              ))}
+          </TransactionContainerType>
+        </TransactionContainer>
+      </>
+    </>
   );
 }
 
 const Header = styled.div`
   display: grid;
-  grid-template-columns: 10% 30% 30% 30%;
+  grid-template-columns: 11% 23% 23% 23% 20%;
   border-bottom: 1px solid #e0e0e0;
-  margin-bottom: 20px;
 
   @media (max-width: 768px) {
     grid-template-columns: 100%;
@@ -224,12 +230,11 @@ const Header = styled.div`
 const TotalBox = styled.div<{ type: string; balance?: number }>`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: baseline;
+  padding-left: 10px;
   justify-content: center;
-  border-radius: 10px;
 
   span {
-    font-size: 1.2rem;
     color: ${(props) =>
       props.type === "income"
         ? "#4CAF50"
@@ -239,45 +244,16 @@ const TotalBox = styled.div<{ type: string; balance?: number }>`
         ? props.balance >= 0
           ? "#4CAF50"
           : "#FF3E4D"
-        : "#333"};
+        : "var(--text-color)"};
+
+    font-weight: bold;
   }
-
-  font-weight: bold;
 `;
 
-const CategoryBreakdown = styled.div`
-  display: flex;
-  justify-content: space-around;
-  width: 100%;
-  max-width: 1200px;
-`;
-
-const CategoryBox = styled.div`
-  background-color: #fff;
-  border-radius: 10px;
-  padding: 15px;
-  text-align: center;
-  flex: 1;
-  margin: 0 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #333;
-`;
-
-/*
 const Row = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-`;
-
-const H1 = styled.h1`
-  font-size: 24px;
-  color: ${(props) => props.theme.colors.text};
-  @media (max-width: 768px) {
-    font-size: 20px;
-  }
+  justify-content: space-evenly;
 `;
 
 const Modal = styled.div`
@@ -292,7 +268,6 @@ const Modal = styled.div`
   align-items: center;
   z-index: 1000;
 `;
-
 const ModalContent = styled.div`
   background-color: white;
   padding: 20px;
@@ -301,4 +276,18 @@ const ModalContent = styled.div`
   max-width: 400px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 `;
-*/
+const TransactionContainer = styled.div`
+  padding-top: 20px;
+  display: flex;
+  flex-direction: row;
+`;
+
+const TransactionContainerType = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin: 0 1rem;
+`;
