@@ -71,13 +71,12 @@ namespace TransactionWebApi.Infra
             services.AddScoped<ITransactionService, TransactionService>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
 
-            
-
             services.AddScoped<IQueryHandler<GetAllTransactionsQuery, IEnumerable<TransactionDto>>, TransactionQueryHandler>();
             services.AddScoped<IQueryHandler<GetTransactionByIdQuery, TransactionDto>, TransactionQueryHandler>();
 
             services.AddScoped<ICommandHandler<CreateTransactionCommand, TransactionDto>, TransactionCommandHandler>();
             services.AddScoped<ICommandHandler<UpdateTransactionCommand, TransactionDto>, TransactionCommandHandler>();
+            services.AddScoped<ICommandHandler<DeleteTransactionCommand, bool>, TransactionCommandHandler>();
 
             services.AddScoped<ICommandDispatcher, CommandDispatcher>();
             services.AddScoped<IQueryDispatcher, QueryDispatcher>();

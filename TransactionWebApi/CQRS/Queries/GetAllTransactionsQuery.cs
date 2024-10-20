@@ -2,8 +2,10 @@
 {
     public class GetAllTransactionsQuery
     {
-        public GetAllTransactionsQuery()
+        public string User { get; set; }
+        public GetAllTransactionsQuery(string user)
         {
+            User = user;
         }
     }
 }

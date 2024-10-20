@@ -1,4 +1,7 @@
-﻿namespace TransactionWebApi.Models
+﻿using System.Text.Json.Serialization;
+using TransactionWebApi.Utils;
+
+namespace TransactionWebApi.Models
 {
     public class Transaction
     {

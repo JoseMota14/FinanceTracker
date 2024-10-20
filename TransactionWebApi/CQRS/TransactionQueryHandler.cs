@@ -25,7 +25,7 @@ namespace TransactionWebApi.CQRS
 
         public async Task<IEnumerable<TransactionDto>> Handle(GetAllTransactionsQuery query)
         {
-            var transactions = await _repository.GetAllTransactionsAsync();
+            var transactions = await _repository.GetAllTransactionsAsync(query.User);
             return _mapper.Map<IEnumerable<TransactionDto>>(transactions);  
         }
 

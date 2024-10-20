@@ -19,6 +19,12 @@ namespace TransactionWebApi.Infra
                         Email = "jose.mota@gmail.com",
                         PasswordSalt = passwordSalt,
                         PasswordHash= passwordHash
+                    },
+                    new User
+                    {
+                        Email = "jose@gmail.com",
+                        PasswordSalt = passwordSalt,
+                        PasswordHash= passwordHash
                     }
                 };
 
@@ -62,7 +68,7 @@ namespace TransactionWebApi.Infra
                         PurchaseDate = DateTime.Now.AddDays(-11),
                         Value = 111,
                         Description = "Clothes",
-                        UserEmail = "jose.mota@gmail.com"
+                        UserEmail = "jose@gmail.com"
                     },
                     new Transaction
                     {
@@ -71,7 +77,7 @@ namespace TransactionWebApi.Infra
                         PurchaseDate = DateTime.Now.AddDays(-6),
                         Value = 1100,
                         Description = "Groceries",
-                        UserEmail = "jose.mota@gmail.com"
+                        UserEmail = "jose@gmail.com"
                     }
                 };
 

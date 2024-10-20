@@ -23,7 +23,8 @@ namespace TransactionWebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllTransactions()
         {
-            var transactions = await _transactionService.GetAllTransactions();
+            var token = ControllerUtils.ExtractUserFromAuth(Request.Headers);
+            var transactions = await _transactionService.GetAllTransactions(token);
             return Ok(transactions);
         }
 
@@ -46,29 +47,23 @@ namespace TransactionWebApi.Controllers
             return CreatedAtAction(nameof(AddTransaction), new { id = newTransaction.TransactionId }, transaction);
         }
 
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> UpdateTransaction(Guid id, [FromBody] Transaction transaction)
-        //{
-        //    var existingTransaction = await _transactionService.GetTransactionByIdAsync(id);
-        //    if (existingTransaction == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    transaction.TransactionId = id;
-        //    await _transactionService.UpdateTransactionAsync(transaction);
-        //    return NoContent();
-        //}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTransaction(Guid id, [FromBody] UpdateTransactionDto transaction)
+        {
+            await _transactionService.UpdateTransaction(id, transaction);
+            return NoContent();
+        }
 
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteTransaction(Guid id)
-        //{
-        //    var transaction = await _transactionService.GetTransactionByIdAsync(id);
-        //    if (transaction == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    await _transactionService.DeleteTransactionAsync(id);
-        //    return NoContent();
-        //}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTransaction(Guid id)
+        {
+            var transaction = await _transactionService.GetTransactionById(id);
+            if (transaction == null)
+            {
+                return NotFound();
+            }
+            await _transactionService.DeleteTransactionById(id);
+            return NoContent();
+        }
     }
 }

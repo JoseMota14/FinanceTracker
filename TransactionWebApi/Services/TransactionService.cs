@@ -23,9 +23,11 @@ namespace TransactionWebApi.Services
             _configuration = configuration;
         }
 
-        public async  Task<IEnumerable<TransactionDto>> GetAllTransactions()
+        public async  Task<IEnumerable<TransactionDto>> GetAllTransactions(string token)
         {
-            var transactions = await _queryDispatcher.Dispatch<GetAllTransactionsQuery, IEnumerable<TransactionDto>>(new GetAllTransactionsQuery());
+            string user = GetEmailFromClaims(token);
+
+            var transactions = await _queryDispatcher.Dispatch<GetAllTransactionsQuery, IEnumerable<TransactionDto>>(new GetAllTransactionsQuery(user));
             return transactions;
         }
 
@@ -44,10 +46,16 @@ namespace TransactionWebApi.Services
             return transaction;
         }
 
-        public async Task<TransactionDto> UpdateTransaction(UpdateTransactionDto dto)
+        public async Task<TransactionDto> UpdateTransaction(Guid id, UpdateTransactionDto dto)
         {
-            var transaction = await _commandDispatcher.Dispatch<UpdateTransactionCommand, TransactionDto>(new UpdateTransactionCommand(dto));
+            var transaction = await _commandDispatcher.Dispatch<UpdateTransactionCommand, TransactionDto>(new UpdateTransactionCommand(id, dto));
             return transaction;
+        }
+
+        public async Task<bool> DeleteTransactionById(Guid transactionId)
+        {
+            await _commandDispatcher.Dispatch<DeleteTransactionCommand, bool>(new DeleteTransactionCommand(transactionId));
+            return true;
         }
 
 
@@ -88,6 +96,7 @@ namespace TransactionWebApi.Services
             }
         }
 
+        
     }
 
 }

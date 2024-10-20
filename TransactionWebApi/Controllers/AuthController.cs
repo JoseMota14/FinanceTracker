@@ -66,6 +66,10 @@ namespace TransactionWebApi.Controllers
                 var ret = await _authService.RefreshToken(model);
                 return Ok(new { Token = ret.Token, RefreshToken = ret.RefreshToken });
             }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized("Logout to obtain new refresh token");
+            }
             catch (Exception ex)
             {
                 return BadRequest("Unexpected error");

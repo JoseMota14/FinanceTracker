@@ -13,9 +13,9 @@ namespace TransactionWebApi.Repository
             _context = context;
         }
 
-        public async Task<IEnumerable<Transaction>> GetAllTransactionsAsync()
+        public async Task<IEnumerable<Transaction>> GetAllTransactionsAsync(string user)
         {
-            return await _context.Transactions.ToListAsync();
+            return await _context.Transactions.Where(t => t.UserEmail == user).ToListAsync();
         }
 
         public async Task<Transaction> GetTransactionByIdAsync(Guid id)

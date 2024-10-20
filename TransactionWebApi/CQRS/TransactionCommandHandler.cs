@@ -8,7 +8,7 @@ using TransactionWebApi.Repository;
 
 namespace TransactionWebApi.CQRS
 {
-    public class TransactionCommandHandler: ICommandHandler<CreateTransactionCommand, TransactionDto>, ICommandHandler<UpdateTransactionCommand, TransactionDto>
+    public class TransactionCommandHandler : ICommandHandler<CreateTransactionCommand, TransactionDto>, ICommandHandler<UpdateTransactionCommand, TransactionDto>, ICommandHandler<DeleteTransactionCommand, bool>
     {
         private readonly EventPublisher _eventPublisher;
 
@@ -38,10 +38,27 @@ namespace TransactionWebApi.CQRS
 
         public async Task<TransactionDto> Handle(UpdateTransactionCommand command)
         {
-            var transaction = _mapper.Map<Transaction>(command.Transaction);
-            await _repository.UpdateTransactionAsync(transaction);
+            var existingTransaction = await _repository.GetTransactionByIdAsync(command.Id);
+            if (existingTransaction == null)
+            {
+                throw new ArgumentNullException("No transaction  with that ID");
+            }
+
+            existingTransaction.Description = command.Transaction.Description;
+            existingTransaction.Value = command.Transaction.Value;
+            existingTransaction.Category = command.Transaction.Category;
+            existingTransaction.PurchaseDate = command.Transaction.PurchaseDate;
+
+            await _repository.UpdateTransactionAsync(existingTransaction);
             await _repository.SaveChangesAsync();
-            return _mapper.Map<TransactionDto>(transaction);
+            return _mapper.Map<TransactionDto>(existingTransaction);
+        }
+
+        public async Task<bool> Handle(DeleteTransactionCommand command)
+        {
+            await _repository.DeleteTransactionAsync(command.Id);
+            await _repository.SaveChangesAsync();
+            return true;
         }
     }
 }
