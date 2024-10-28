@@ -21,6 +21,9 @@ namespace TransactionWebApi.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(Transaction), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ResponseCache(Duration = 60)]
         public async Task<IActionResult> GetAllTransactions()
         {
             var token = ControllerUtils.ExtractUserFromAuth(Request.Headers);

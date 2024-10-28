@@ -13,6 +13,11 @@ namespace TransactionWebApi.Services
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
+        public UserService(IUserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        }
+
         public UserService(IUserRepository userRepository, IMapper mapper, EventPublisher eventPublisher)
         {
             _userRepository = userRepository;

@@ -15,6 +15,7 @@ using TransactionWebApi.CQRS.Queries;
 using TransactionWebApi.Data;
 using TransactionWebApi.DTO;
 using TransactionWebApi.Events;
+using TransactionWebApi.Infra.Health;
 using TransactionWebApi.Models.Validation;
 using TransactionWebApi.Repository;
 using TransactionWebApi.Services;
@@ -82,6 +83,14 @@ namespace TransactionWebApi.Infra
             services.AddScoped<IQueryDispatcher, QueryDispatcher>();
 
             services.AddControllers();
+
+            services.AddHealthChecks()
+                    .AddCheck("DiskSpace", new DiskSpaceHealthCheck());
+
+            //once is using a prodution database is a good approach
+            services.AddResponseCaching();
+            services.AddMemoryCache();
+
 
             services.AddFluentValidationAutoValidation();
             services.AddValidatorsFromAssemblyContaining<TransactionValidator>();
