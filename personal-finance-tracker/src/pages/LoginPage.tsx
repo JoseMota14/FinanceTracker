@@ -29,7 +29,6 @@ export default function AuthPage() {
         ? "https://localhost:7085/api/Auth/login"
         : "https://localhost:7085/api/Auth/register";
       const response = await axios.post(endpoint, data);
-      console.log(response.status);
       if (response.status === 200) {
         if (isLogin) {
           successLogin(

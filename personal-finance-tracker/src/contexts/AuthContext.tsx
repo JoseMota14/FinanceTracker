@@ -74,7 +74,7 @@ function AuthProvider({ children }: iAuthProvider) {
   }, []);
 
   const logout = useCallback(() => {
-    logoutFunction();
+    //logoutFunction(); To do
     removeRefreshToken();
     setAccessToken("");
     sessionStorage.removeItem("userEmail");

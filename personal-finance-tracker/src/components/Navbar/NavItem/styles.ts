@@ -30,7 +30,8 @@ export const IconWrapper = styled.div.withConfig({
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: ${({ isActive }) => (isActive ? "#3b82f6" : "#64748b")};
+  color: ${({ isActive }) =>
+    isActive ? `var(--text-active)` : `var(--text-inactive)`};
   @media (max-width: 768px) {
     a {
       display: none;

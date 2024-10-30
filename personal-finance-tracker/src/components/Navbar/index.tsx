@@ -5,11 +5,13 @@ import { FiLogOut, FiSettings } from "react-icons/fi";
 import { GrTransaction } from "react-icons/gr";
 import { MdDashboard } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
+import logo from "../../assets/download.svg";
 import useAuth from "../../hooks/useAuth";
 import { useTheme } from "../../hooks/useTheme";
 import Switcher from "../Switcher";
 import NavbarItem from "./NavItem";
 import { Dropdown, DropdownItem, Nav, UserIcon } from "./styles";
+
 interface LinkProps<T> {
   label: string;
   path: string;
@@ -100,8 +102,16 @@ export default function Navbar() {
 
   return (
     <Nav>
+      <img
+        src={logo}
+        alt="logo"
+        width="40px"
+        height="40px"
+        className="navbar-logo"
+        style={{ borderRadius: "10px" }}
+      />
       {renderedLinks}
-      <Switcher></Switcher>
+      <Switcher />
       <UserDropdown />
     </Nav>
   );

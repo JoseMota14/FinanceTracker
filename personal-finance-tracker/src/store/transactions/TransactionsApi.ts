@@ -21,6 +21,12 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
+let logoutFunction: () => void;
+
+export const setLogoutFunction = (func: () => void) => {
+  logoutFunction = func;
+};
+
 const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
   let result = await baseQuery(args, api, extraOptions);
 
@@ -51,16 +57,22 @@ const baseQueryWithReauth = async (args: any, api: any, extraOptions: any) => {
       } else {
         // If refresh failed, log out the user or take appropriate actions
         console.log("Refresh token failed, logging out...");
-        // Add logout logic or token removal here
+        if (logoutFunction) {
+          logoutFunction();
+        }
       }
     } else {
       // No refresh token available, log out or handle session expiration
       console.log("No refresh atoken available, logging out...");
+      if (logoutFunction) {
+        logoutFunction();
+      }
     }
   }
 
   return result;
 };
+
 // Create the API without directly accessing AuthContext
 export const transactionsApi = createApi({
   reducerPath: "transactionsApi",
@@ -98,8 +110,27 @@ export const transactionsApi = createApi({
       }),
       invalidatesTags: [{ type: "Transaction", id: "LIST" }],
     }),
+    updateTransaction: builder.mutation<void, { id: any; body: any }>({
+      query: ({ id, body }) => ({
+        url: `Transaction/${id}`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: [{ type: "Transaction", id: "LIST" }],
+    }),
+    deleteTransaction: builder.mutation<void, { id: any }>({
+      query: ({ id }) => ({
+        url: `Transaction/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [{ type: "Transaction", id: "LIST" }],
+    }),
   }),
 });
 
-export const { useGetTransactionsQuery, useAddTransactionMutation } =
-  transactionsApi;
+export const {
+  useGetTransactionsQuery,
+  useAddTransactionMutation,
+  useUpdateTransactionMutation,
+  useDeleteTransactionMutation,
+} = transactionsApi;

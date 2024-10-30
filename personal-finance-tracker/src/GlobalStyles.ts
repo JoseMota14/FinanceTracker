@@ -6,9 +6,12 @@ export const GlobalStyles = createGlobalStyle`
 :root {
     --background-color: ${({ theme }) => theme.colors.background};
     --text-color: ${({ theme }) => theme.colors.text};
+    --text-active: ${({ theme }) => theme.colors.activeText};
+    --text-inactive: ${({ theme }) => theme.colors.inactiveText};
     --button-border: ${({ theme }) => theme.button.borderColor};
     --background-color-fade: ${({ theme }) => theme.colors.backgroundFade};
-
+    --backfround-color-foreground: ${({ theme }) =>
+      theme.colors.backgroundForeground};
   }
 
   body {

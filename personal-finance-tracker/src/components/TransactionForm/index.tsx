@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import {
+  CategorySchema,
   TransactionAdd,
   TransactionAddSchema,
 } from "../../entities/Transaction";
@@ -61,8 +62,11 @@ export default function TransactionForm({
     <Form ref={modalRef} onSubmit={handleSubmit(handleAddExpense)}>
       <Label>Category</Label>
       <Select {...register("category")}>
-        <option value="Clothes">Clothes</option>
-        <option value="Food">Food</option>
+        {CategorySchema.options.map((category) => (
+          <option key={category} value={category}>
+            {category}
+          </option>
+        ))}
       </Select>
       {errors.category && <Error>{errors.category.message}</Error>}
 

@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "../components/Layout";
+import EditTransactionPage from "../components/TransactionForm/EditForm";
 import DashboardPage from "../pages/DashboardPage";
 import ErrorPage from "../pages/ErrorPage";
 import LoginPage from "../pages/LoginPage";
@@ -19,6 +20,10 @@ const router = (isLoggedIn: boolean) => {
         {
           path: "/transactions",
           element: <TransactionPage />,
+        },
+        {
+          path: "/transactions/edit/:transactionId",
+          element: <EditTransactionPage />,
         },
       ],
     },

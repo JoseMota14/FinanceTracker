@@ -11,7 +11,7 @@ export const Nav = styled.nav`
   width: 100%;
   z-index: 1000;
 
-  background-color: var(--background-color);
+  background-color: var(--backfround-color-foreground);
   border-bottom: 1px solid var(--button-border);
   top: 0;
 
@@ -63,11 +63,12 @@ export const UserIcon = styled.div`
   justify-content: center;
   width: 40px;
   height: 40px;
+  border: 1px solid var(--button-border);
   border-radius: 50%;
   background-color: var(--background-color-fade);
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #e0e0e0;
+    background-color: #7686a7;
   }
 `;

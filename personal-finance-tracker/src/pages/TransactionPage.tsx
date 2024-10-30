@@ -2,66 +2,17 @@ import { useEffect, useState } from "react";
 import "react-calendar/dist/Calendar.css";
 import "react-date-picker/dist/DatePicker.css";
 import { useDispatch, useSelector } from "react-redux";
+import { useSearchParams } from "react-router-dom";
 import styled from "styled-components";
 import ExpenseCard from "../components/ExpenseCard";
 import { Button } from "../components/Shared/Button";
 import YearMonthPicker from "../components/Shared/Datepicker";
 import TransactionForm from "../components/TransactionForm";
 import { Transaction } from "../entities/Transaction";
+import { useNavigation } from "../hooks/useNavigation";
 import { AppDispatch, RootState, useGetTransactionsQuery } from "../store";
 import { setTransactions } from "../store/transactions/TransactionsSlice";
 import { notifyError } from "../utils/Notify";
-
-const transactionsMock: Transaction[] = [
-  {
-    transactionId: "1",
-    category: "Food",
-    purchaseDate: "2024-10-01",
-    value: 50,
-    type: "expense",
-    description: "Groceries",
-  },
-  {
-    transactionId: "22",
-    category: "Food",
-    purchaseDate: "2024-10-01",
-    value: 50,
-    type: "expense",
-    description: "Groceries",
-  },
-  {
-    transactionId: "25",
-    category: "Clothes",
-    purchaseDate: "2024-10-03",
-    value: 100,
-    type: "expense",
-    description: "New shoes",
-  },
-  {
-    transactionId: "3",
-    category: "General",
-    purchaseDate: "2024-10-05",
-    value: 150,
-    type: "income",
-    description: "Salary",
-  },
-  {
-    transactionId: "4",
-    category: "Food",
-    purchaseDate: "2024-09-21",
-    value: 75,
-    type: "expense",
-    description: "Restaurant",
-  },
-  {
-    transactionId: "24",
-    category: "Clothes",
-    purchaseDate: "2024-10-10",
-    value: 501,
-    type: "expense",
-    description: "Groceries",
-  },
-];
 
 export default function TransactionPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -83,14 +34,6 @@ export default function TransactionPage() {
       dispatch(setTransactions(fetchTransactions));
     }
   }, [fetchTransactions, error, dispatch]);
-
-  // const handleAddExpense = (data: Transaction) => {
-  //   const newExpense: Transaction = {
-  //     ...data,
-  //   };
-  //   dispatch(setTransactions([...transactions, newExpense])); // Dispatching the updated transactions
-  //   setIsFormVisible(false); // Hide the form after successful submission
-  // };
 
   const [isFormVisible, setIsFormVisible] = useState(false);
 
@@ -124,7 +67,7 @@ export default function TransactionPage() {
   const [month, setMonth] = useState(new Date().getMonth() + 1);
 
   useEffect(() => {
-    const filtered = transactionsMock.filter((transaction) => {
+    const filtered = transactions.filter((transaction) => {
       const transactionDate = new Date(transaction.purchaseDate);
       return (
         transactionDate.getMonth() + 1 === month &&
@@ -135,7 +78,7 @@ export default function TransactionPage() {
     setFilteredTransactions(filtered);
     calculateTotals(filtered);
     calculateCategoryTotals(filtered);
-  }, [month, year]);
+  }, [month, year, transactions]);
 
   const calculateTotals = (transactions: Transaction[]) => {
     const income = transactions
@@ -160,6 +103,24 @@ export default function TransactionPage() {
     setCategoryTotals({ food, clothing, general });
   };
 
+  const [searchParams] = useSearchParams();
+  const transactionId = searchParams.get("transactionId");
+  const { push, goBack } = useNavigation();
+
+  useEffect(() => {}, [transactionId]);
+
+  const back = () => {
+    goBack();
+  };
+
+  const handleSelectTransaction = (data: Transaction) => {
+    push({
+      params: {
+        transactionId: data.transactionId,
+      },
+    });
+  };
+
   return (
     <>
       <Header>
@@ -177,6 +138,11 @@ export default function TransactionPage() {
           Balance <span>{totals.balance}</span>
         </TotalBox>
         <Row>
+          {transactionId && (
+            <Button variant="ghost" onClick={back}>
+              Back
+            </Button>
+          )}
           <Button variant="ghost" onClick={refreshTransactionForm}>
             Refresh
           </Button>
@@ -194,24 +160,36 @@ export default function TransactionPage() {
             </ModalContent>
           </Modal>
         )}
-        <TransactionContainer>
-          <TransactionContainerType>
-            <h4>Expenses</h4>
-            {filteredTransactions
-              .filter((tr) => tr.type === "expense")
-              .map((tr) => (
-                <ExpenseCard key={tr.transactionId} data={tr} />
-              ))}
-          </TransactionContainerType>
-          <TransactionContainerType>
-            <h4>Income</h4>
-            {filteredTransactions
-              .filter((tr) => tr.type === "income")
-              .map((tr) => (
-                <ExpenseCard key={tr.transactionId} data={tr} />
-              ))}
-          </TransactionContainerType>
-        </TransactionContainer>
+        {transactionId ? (
+          <div>update</div>
+        ) : (
+          <TransactionContainer>
+            <TransactionContainerType>
+              <h4>Expenses</h4>
+              {filteredTransactions
+                .filter((tr) => tr.type === "expense")
+                .map((tr) => (
+                  <ExpenseCard
+                    key={tr.transactionId}
+                    data={tr}
+                    onSelect={handleSelectTransaction}
+                  />
+                ))}
+            </TransactionContainerType>
+            <TransactionContainerType>
+              <h4>Income</h4>
+              {filteredTransactions
+                .filter((tr) => tr.type === "income")
+                .map((tr) => (
+                  <ExpenseCard
+                    key={tr.transactionId}
+                    data={tr}
+                    onSelect={handleSelectTransaction}
+                  />
+                ))}
+            </TransactionContainerType>
+          </TransactionContainer>
+        )}
       </>
     </>
   );
@@ -219,7 +197,7 @@ export default function TransactionPage() {
 
 const Header = styled.div`
   display: grid;
-  grid-template-columns: 11% 23% 23% 23% 20%;
+  grid-template-columns: 10% 20% 20% 20% 30%;
   border-bottom: 1px solid #e0e0e0;
 
   @media (max-width: 768px) {
@@ -280,6 +258,9 @@ const TransactionContainer = styled.div`
   padding-top: 20px;
   display: flex;
   flex-direction: row;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const TransactionContainerType = styled.div`

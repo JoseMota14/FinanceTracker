@@ -1,13 +1,77 @@
-import { FaMoon, FaSun } from "react-icons/fa";
+import { useRef, useState } from "react";
 import { useTheme } from "../../hooks/useTheme";
-import { Container } from "./styles";
+import { Knob, MoonIcon, SunIcon, ToggleButton, ToggleWrapper } from "./styles";
 
 export default function Switcher() {
   const { theme, toggleTheme } = useTheme();
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const knobRef = useRef<HTMLDivElement>(null);
 
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (isDragging) return;
+    toggleTheme();
+  };
+
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+    setIsDragging(true);
+    e.dataTransfer.setData("text", "");
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
+    if (!toggleRef.current || !e.clientX) return;
+
+    const toggleRect = toggleRef.current.getBoundingClientRect();
+    const toggleWidth = toggleRect.width;
+    const relativeX = e.clientX - toggleRect.left;
+
+    const threshold = 0;
+    const shouldSwitch =
+      relativeX > toggleWidth * (1 - threshold) ||
+      relativeX < toggleWidth * threshold;
+
+    // Only switch if we cross the threshold
+    if (shouldSwitch && (theme === "dark") !== relativeX > toggleWidth / 2) {
+      toggleTheme();
+    }
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
+  // useEffect(() => {
+  //   const savedTheme = localStorage.getItem("theme");
+  //   if (savedTheme) {
+  //     const parsedTheme = savedTheme === "dark";
+  //     toggleTheme();
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   localStorage.setItem("theme", isDark ? "dark" : "light");
+  //   document.documentElement.classList.toggle("dark", isDark);
+  // }, [isDark]);
   return (
-    <Container onClick={toggleTheme}>
-      {theme === "light" ? <FaMoon color="black"></FaMoon> : <FaSun></FaSun>}{" "}
-    </Container>
+    <ToggleWrapper>
+      <ToggleButton
+        ref={toggleRef}
+        onClick={handleClick}
+        isDark={theme === "dark"}
+        aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
+      >
+        <SunIcon isDark={theme === "dark"}>☀️</SunIcon>
+        <MoonIcon isDark={theme === "dark"}>🌙</MoonIcon>
+        <Knob
+          ref={knobRef}
+          draggable="true"
+          onDragStart={handleDragStart}
+          onDrag={handleDrag}
+          onDragEnd={handleDragEnd}
+          isDark={theme === "dark"}
+        />
+      </ToggleButton>
+    </ToggleWrapper>
   );
 }

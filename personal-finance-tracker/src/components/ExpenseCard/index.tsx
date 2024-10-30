@@ -2,10 +2,15 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, useState } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { MdDelete, MdEdit } from "react-icons/md";
+import { Link } from "react-router-dom";
 import { Transaction } from "../../entities/Transaction";
+import { useDeleteTransactionMutation } from "../../store/transactions/TransactionsApi";
+import { notifyError, notifySuccess } from "../../utils/Notify";
 import getIcon from "../Shared/Icons";
 import {
   Amount,
+  Buttons,
   Card,
   CardFooter,
   CardHeader,
@@ -19,11 +24,27 @@ gsap.registerPlugin(ScrollTrigger);
 
 interface CardProps<T> {
   data: T;
+  onSelect: (transaction: Transaction) => void;
 }
 
-export default function ExpenseCard({ data }: CardProps<Transaction>) {
+export default function ExpenseCard({
+  data,
+  onSelect,
+}: CardProps<Transaction>) {
   const transactionRef = useRef(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [deleteTransaction] = useDeleteTransactionMutation();
+
+  const deleteData = async (id: string) => {
+    try {
+      await deleteTransaction({
+        id,
+      }).unwrap();
+      notifySuccess("Transaction delete successfully!");
+    } catch (error) {
+      notifyError("Failed to delete the transaction.");
+    }
+  };
 
   useEffect(() => {
     const element = transactionRef.current;
@@ -44,12 +65,23 @@ export default function ExpenseCard({ data }: CardProps<Transaction>) {
   return (
     <Card ref={transactionRef}>
       <CardHeader>
-        {getIcon(data.category.toLowerCase())}
+        {getIcon(data.category?.toLowerCase())}
         <Description>{data.description}</Description>
         <Amount type={data.type}>${data.value.toFixed(2)}</Amount>
-        <ToggleButton onClick={() => setShowDetails(!showDetails)}>
-          {showDetails ? <FaChevronUp /> : <FaChevronDown />}
-        </ToggleButton>
+        <Buttons>
+          <ToggleButton>
+            {/* <ToggleButton onClick={() => onSelect(data)}> */}
+            <Link to={`/transactions/edit/${data.transactionId}`}>
+              <MdEdit style={{ color: "black" }} />
+            </Link>
+          </ToggleButton>
+          <ToggleButton onClick={() => deleteData(data.transactionId)}>
+            <MdDelete />
+          </ToggleButton>
+          <ToggleButton onClick={() => setShowDetails(!showDetails)}>
+            {showDetails ? <FaChevronUp /> : <FaChevronDown />}
+          </ToggleButton>
+        </Buttons>
       </CardHeader>
 
       {showDetails && (

@@ -1,20 +1,31 @@
 import {
   FaCar,
-  FaMoneyBillWave,
+  FaHeart,
   FaQuestionCircle,
-  FaShoppingCart,
+  FaUniversity,
   FaUtensils,
 } from "react-icons/fa";
-import { GiClothes, GiReceiveMoney } from "react-icons/gi";
+import { FaHouse } from "react-icons/fa6";
+import { GiClothes } from "react-icons/gi";
+import { LuPartyPopper } from "react-icons/lu";
+import {
+  MdOutlineAttachMoney,
+  MdOutlineSportsSoccer,
+  MdOutlineWork,
+} from "react-icons/md";
 
 const getIcon = (type: string) => {
   const iconMap: { [key: string]: JSX.Element } = {
-    income: <GiReceiveMoney />,
-    expense: <FaShoppingCart />,
     food: <FaUtensils />,
     transport: <FaCar />,
-    bill: <FaMoneyBillWave />,
     clothes: <GiClothes />,
+    education: <FaUniversity />,
+    investments: <MdOutlineAttachMoney />,
+    home: <FaHouse />,
+    social: <LuPartyPopper />,
+    sports: <MdOutlineSportsSoccer />,
+    work: <MdOutlineWork />,
+    health: <FaHeart />,
   };
 
   return iconMap[type] || <FaQuestionCircle />;
