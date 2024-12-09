@@ -10,6 +10,8 @@ namespace TransactionWebApi.Services
 
         Task Register(RegisterDto model);
 
-        Task<(string Token, string RefreshToken)> RefreshToken(RefreshToken model);
+        Task<(string Token, string RefreshToken)> RefreshToken(RefreshToken model, string lang);
+
+        Task Logout(string user);
     }
 }

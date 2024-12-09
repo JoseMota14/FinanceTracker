@@ -6,6 +6,7 @@ using System.Security.Claims;
 using TransactionWebApi.Exceptions;
 using TransactionWebApi.Data;
 using Microsoft.AspNetCore.Authorization;
+using TransactionWebApi.Utils;
 
 namespace TransactionWebApi.Controllers
 {
@@ -70,14 +71,15 @@ namespace TransactionWebApi.Controllers
         {
             try
             {
-                var ret = await _authService.RefreshToken(model);
+                var lang = Request.Headers.CultureAddOn();
+                var ret = await _authService.RefreshToken(model, lang);
                 _logger.LogInformation($"Refresh token with sucess");
                 return Ok(new { Token = ret.Token, RefreshToken = ret.RefreshToken });
             }
             catch (UnauthorizedException ex)
             {
                 _logger.LogError($"Refresh token with error");
-                return Unauthorized("Logout to obtain new refresh token");
+                return Unauthorized(ex.Message);
             }
             catch (Exception ex)
             {
@@ -86,10 +88,19 @@ namespace TransactionWebApi.Controllers
             }
         }
 
-        [HttpPost("logout")]
-        public async Task<IActionResult> Logout([FromBody] RefreshToken model)
+        [HttpGet("logout/{user}")]
+        public async Task<IActionResult> Logout(string user)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _authService.Logout(user);
+                return Ok("Logout ok");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Refresh token with error {ex.Message}");
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

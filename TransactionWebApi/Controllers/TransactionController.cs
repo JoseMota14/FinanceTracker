@@ -31,17 +31,6 @@ namespace TransactionWebApi.Controllers
             return Ok(transactions);
         }
 
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> GetTransactionById(Guid id)
-        //{
-        //    var transaction = await _transactionService.GetTransactionByIdAsync(id);
-        //    if (transaction == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return Ok(transaction);
-        //}
-
         [HttpPost]
         public async Task<IActionResult> AddTransaction([FromBody] CreateTransactionDto transaction)
         {

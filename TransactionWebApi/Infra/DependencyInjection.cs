@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Shared.Infra;
 using System.Text;
 using TransactionWebApi.Context;
 using TransactionWebApi.CQRS;
@@ -25,10 +26,16 @@ namespace TransactionWebApi.Infra
 {
     public static class DependencyInjection
     {
+        // Culture
+        public static readonly string[] SupportedCultures = new string[] { "pt-PT", "en-US" };
+        private static readonly string ResourcePath = "Resources";
+
         public static IServiceCollection AddInfrastucture(this IServiceCollection services, IConfiguration configuration)
         {
-
             services.AddHealthChecks();
+
+            // Configure culture and language
+            ConfigureLocalization(services);
 
             string[] urls = configuration["AllowedUrl"].Split(";");
             services.AddCors(options =>
@@ -56,6 +63,9 @@ namespace TransactionWebApi.Infra
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]))
                     };
                 });
+
+            services.AddRabbitMQEventBus(options =>
+               configuration.GetSection("RabbitMQSettings").Bind(options));
 
             services.AddDbContext<FinanceDbContext>(options =>
                options.UseInMemoryDatabase(databaseName: "InMemoryDatabase"));
@@ -99,5 +109,18 @@ namespace TransactionWebApi.Infra
 
             return services;
         }
+        private static void ConfigureLocalization(IServiceCollection services)
+        {
+            services.AddLocalization(options => options.ResourcesPath = ResourcePath);
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.SetDefaultCulture(SupportedCultures[0])
+                    .AddSupportedCultures(SupportedCultures)
+                    .AddSupportedUICultures(SupportedCultures);
+            });
+        }
     }
 }
+
+

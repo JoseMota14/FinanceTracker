@@ -1,4 +1,6 @@
-﻿using System.Security.Claims;
+﻿using Microsoft.Extensions.Localization;
+using System.Globalization;
+using System.Security.Claims;
 using TransactionWebApi.DTO;
 using TransactionWebApi.Exceptions;
 using TransactionWebApi.Models;
@@ -12,12 +14,14 @@ namespace TransactionWebApi.Services
         private readonly IUserRepository _userRepository;
         private readonly TokenUtils _tokenUtils;
         private readonly IConfiguration _configuration;
+        private readonly IStringLocalizer<AuthService> _localizer;
 
-        public AuthService(IUserRepository userRepository, TokenUtils tokenUtils, IConfiguration configuration)
+        public AuthService(IUserRepository userRepository, TokenUtils tokenUtils, IConfiguration configuration, IStringLocalizer<AuthService> localizer)
         {
             _userRepository = userRepository;
             _tokenUtils = tokenUtils;
             _configuration = configuration;
+            _localizer = localizer;
         }
 
         public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
@@ -77,7 +81,7 @@ namespace TransactionWebApi.Services
             await _userRepository.SaveChangesAsync();
         }
 
-        public async Task<(string Token, string RefreshToken)> RefreshToken(RefreshToken model)
+        public async Task<(string Token, string RefreshToken)> RefreshToken(RefreshToken model, string lang)
         {
             var principal = _tokenUtils.GetPrincipalFromExpiredToken(model.Token);
             var email = principal.FindFirst(ClaimTypes.Email)?.Value;
@@ -85,7 +89,8 @@ namespace TransactionWebApi.Services
             var user = await _userRepository.GetUserByEmail(email);
             if (user == null || user.RefreshToken != model.RefreshTokenValue || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
             {
-                throw new UnauthorizedException("Invalid refresh token");
+                CultureInfo.CurrentUICulture = new CultureInfo(lang);
+                throw new UnauthorizedException(_localizer["InvalidToken"]);
             }
 
             var newToken = _tokenUtils.GenerateJwtToken(email);
@@ -97,6 +102,20 @@ namespace TransactionWebApi.Services
             await _userRepository.SaveChangesAsync();
 
             return (Token : newToken, RefreshToken : newRefreshToken );
+        }
+
+        public async Task Logout(string username)
+        {
+            var user = await _userRepository.GetUserByEmail(username);
+            if (user == null )
+            {
+                throw new UnauthorizedException(_localizer["NoUser"]);
+            }
+
+            user.RefreshToken = null;
+
+            await _userRepository.UpdateUserAsync(user);
+            await _userRepository.SaveChangesAsync();
         }
     }
 }

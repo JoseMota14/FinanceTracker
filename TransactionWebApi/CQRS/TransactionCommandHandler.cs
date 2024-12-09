@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
+using Shared.Bus;
+using Shared.Event;
 using TransactionWebApi.CQRS.Commands;
 using TransactionWebApi.CQRS.Handlers;
 using TransactionWebApi.DTO;
@@ -13,12 +16,14 @@ namespace TransactionWebApi.CQRS
         private readonly EventPublisher _eventPublisher;
 
         private readonly ITransactionRepository _repository;
+        private readonly IEventBus _eventBus;
         private readonly IMapper _mapper;
 
-        public TransactionCommandHandler(ITransactionRepository repository, IMapper mapper, EventPublisher eventPublisher)
+        public TransactionCommandHandler(ITransactionRepository repository, IMapper mapper, EventPublisher eventPublisher, IEventBus eventBus)
         {
             _repository = repository;
             _mapper = mapper;
+            _eventBus = eventBus;
             _eventPublisher = eventPublisher;
         }
 
@@ -27,6 +32,15 @@ namespace TransactionWebApi.CQRS
             var transaction = TransactionFactory.Create(command);
 
             await transaction.OnAddingAsync();
+
+            var @event = new TransactionCreatedEvent
+            {
+                UserId = command.Transaction.UserId,
+                Amount = command.Transaction.Value,
+                Category = command.Transaction.Category
+            };
+
+            await _eventBus.PublishAsync(@event);
 
             await _repository.AddTransactionAsync(transaction);
             await _repository.SaveChangesAsync();

@@ -23,7 +23,7 @@ namespace TransactionWebApi.Utils
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Email, userId) }),
-                Expires = DateTime.UtcNow.AddMinutes(15),
+                Expires = DateTime.UtcNow.AddSeconds(15),
                 Issuer = _configuration["Jwt:Issuer"],
                 Audience = _configuration["Jwt:Audience"],
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
