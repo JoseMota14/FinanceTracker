@@ -6,7 +6,6 @@ export const ToggleWrapper = styled.div`
 
   align-items: center;
   gap: 1rem;
-  padding: 2rem;
 `;
 
 export const ToggleButton = styled.button<{ isDark: boolean }>`

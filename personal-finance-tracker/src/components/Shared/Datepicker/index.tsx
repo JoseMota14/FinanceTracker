@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
+  DropdownButton,
+  DropdownContainer,
+  DropdownOption,
   PickerContainer,
-  SelectContainer,
-  StyledSelect,
-  StyledSelectYear,
+  SectionCenter,
 } from "./styles";
 
 interface Props {
@@ -12,6 +13,8 @@ interface Props {
 }
 
 const YearMonthPicker = ({ onYearChange, onMonthChange }: Props) => {
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 10 }, (_, i) => currentYear - i);
   const months = [
@@ -34,36 +37,81 @@ const YearMonthPicker = ({ onYearChange, onMonthChange }: Props) => {
     months[new Date().getMonth()]
   );
 
-  const handleYearChange = (e: any) => {
-    const year = Number(e.target.value);
+  const [isYearDropdownOpen, setYearDropdownOpen] = useState(false);
+  const [isMonthDropdownOpen, setMonthDropdownOpen] = useState(false);
+
+  const handleYearChange = (year: number) => {
     setSelectedYear(year);
     onYearChange(year);
+    setYearDropdownOpen(false); // Close dropdown
   };
 
-  const handleMonthChange = (e: any) => {
-    const month = e.target.value;
+  const handleMonthChange = (month: string) => {
     setSelectedMonth(month);
     onMonthChange(months.indexOf(month) + 1);
+    setMonthDropdownOpen(false); // Close dropdown
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setYearDropdownOpen(false);
+        setMonthDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <PickerContainer>
-      <SelectContainer>
-        <StyledSelectYear value={selectedYear} onChange={handleYearChange}>
-          {years.map((year) => (
-            <option key={year} value={year}>
-              {year}
-            </option>
-          ))}
-        </StyledSelectYear>
-        <StyledSelect value={selectedMonth} onChange={handleMonthChange}>
-          {months.map((month) => (
-            <option key={month} value={month}>
-              {month}
-            </option>
-          ))}
-        </StyledSelect>
-      </SelectContainer>
+    <PickerContainer ref={dropdownRef}>
+      <SectionCenter>
+        <DropdownButton
+          onClick={() => {
+            setYearDropdownOpen(!isYearDropdownOpen);
+            setMonthDropdownOpen(false); // Close month dropdown if open
+          }}
+        >
+          {selectedYear}
+        </DropdownButton>
+        {isYearDropdownOpen && (
+          <DropdownContainer>
+            {years.map((year) => (
+              <DropdownOption key={year} onClick={() => handleYearChange(year)}>
+                {year}
+              </DropdownOption>
+            ))}
+          </DropdownContainer>
+        )}
+      </SectionCenter>
+      <SectionCenter>
+        <DropdownButton
+          onClick={() => {
+            setMonthDropdownOpen(!isMonthDropdownOpen);
+            setYearDropdownOpen(false); // Close year dropdown if open
+          }}
+        >
+          {selectedMonth}
+        </DropdownButton>
+        {isMonthDropdownOpen && (
+          <DropdownContainer>
+            {months.map((month) => (
+              <DropdownOption
+                key={month}
+                onClick={() => handleMonthChange(month)}
+              >
+                {month}
+              </DropdownOption>
+            ))}
+          </DropdownContainer>
+        )}
+      </SectionCenter>
     </PickerContainer>
   );
 };

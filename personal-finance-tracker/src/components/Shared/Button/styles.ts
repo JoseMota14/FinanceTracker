@@ -2,6 +2,7 @@ import styled, { css } from "styled-components";
 
 // Button styles using styled-components
 export const baseButtonStyles = css`
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -36,6 +37,7 @@ export const buttonVariantStyles = {
     }
   `,
   ghost: css`
+    border: 1px solid ${({ theme }) => theme.colors.border};
     background-color: transparent;
     color: ${({ theme }) => theme.colors.text};
     &:hover {

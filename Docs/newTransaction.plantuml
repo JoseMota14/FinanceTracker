@@ -1,0 +1,22 @@
+@startuml NewTransac
+actor User
+participant UI
+participant Controller
+participant Service
+participant CommandHandler
+participant Worker
+
+User -> UI: Inputs transaction details
+UI -> Controller: Sends transaction details
+Controller -> Controller: Validate auth
+Controller -> Service: Validates information
+Service -> CommandHandler: Dispatch new transaction
+alt Type is Expense
+    CommandHandler -> Worker: Send transaction details
+    Worker -> Worker : Process the transaction
+else Type is not Expense
+    CommandHandler -> Controller: Return response
+end
+Controller -> UI: Respond to the request
+UI -> User: Display the result
+@enduml

@@ -74,7 +74,7 @@ function AuthProvider({ children }: iAuthProvider) {
   }, []);
 
   const logout = useCallback(() => {
-    //logoutFunction(); To do
+    logoutFunction();
     removeRefreshToken();
     setAccessToken("");
     sessionStorage.removeItem("userEmail");
@@ -95,13 +95,15 @@ function AuthProvider({ children }: iAuthProvider) {
 
   const logoutFunction = useCallback(async (): Promise<void> => {
     try {
-      const response = await fetch("https://localhost:7085/api/Auth/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ refreshToken }),
-      });
+      const response = await fetch(
+        `https://localhost:7085/api/Auth/logout/${email}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to logout");

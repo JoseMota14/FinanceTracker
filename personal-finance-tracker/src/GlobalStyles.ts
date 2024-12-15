@@ -12,6 +12,7 @@ export const GlobalStyles = createGlobalStyle`
     --background-color-fade: ${({ theme }) => theme.colors.backgroundFade};
     --backfround-color-foreground: ${({ theme }) =>
       theme.colors.backgroundForeground};
+    --border-box : ${({ theme }) => theme.colors.border}
   }
 
   body {

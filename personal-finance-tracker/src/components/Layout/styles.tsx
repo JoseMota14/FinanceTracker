@@ -10,7 +10,6 @@ export const NavbarWrapper = styled.div`
 
 export const MainContent = styled.main`
   padding-top: 60px;
-  margin-left: 1rem;
   width: auto;
 
   @media (max-width: 768px) {

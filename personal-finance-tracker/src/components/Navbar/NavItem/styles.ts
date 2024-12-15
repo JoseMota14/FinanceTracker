@@ -14,8 +14,6 @@ export const StyledButton = styled(Button).withConfig({
   padding: 1rem 0rem 1rem 1rem;
   transition: all 0.3s;
   background-color: 1px solid var(--background-color);
-  /* background-color: ${({ isActive }) =>
-    isActive ? "rgba(14, 165, 233, 0.1)" : "transparent"}; */
 
   &:hover {
     color: ${({ isActive }) => (isActive ? "#3b82f6" : "#475569")};
@@ -32,6 +30,11 @@ export const IconWrapper = styled.div.withConfig({
   gap: 0.5rem;
   color: ${({ isActive }) =>
     isActive ? `var(--text-active)` : `var(--text-inactive)`};
+
+  a {
+    color: var(--text-color);
+  }
+
   @media (max-width: 768px) {
     a {
       display: none;

@@ -8,6 +8,7 @@ export const lightTheme = {
     backgroundForeground: "#C3CAD9",
     activeText: "#3b82f6",
     inactiveText: "#64748b",
+    border: "rgba(107, 182, 211, 0.38)",
   },
   button: {
     borderColor: "#333333",
@@ -22,6 +23,7 @@ export const darkTheme = {
     backgroundForeground: "#4F5973",
     activeText: "#272C34",
     inactiveText: "#31405A",
+    border: "rgba(255, 235, 167, 0.15)",
   },
   button: {
     borderColor: "#ffffff",

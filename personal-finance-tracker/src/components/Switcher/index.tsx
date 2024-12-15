@@ -40,19 +40,6 @@ export default function Switcher() {
   const handleDragEnd = () => {
     setIsDragging(false);
   };
-
-  // useEffect(() => {
-  //   const savedTheme = localStorage.getItem("theme");
-  //   if (savedTheme) {
-  //     const parsedTheme = savedTheme === "dark";
-  //     toggleTheme();
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   localStorage.setItem("theme", isDark ? "dark" : "light");
-  //   document.documentElement.classList.toggle("dark", isDark);
-  // }, [isDark]);
   return (
     <ToggleWrapper>
       <ToggleButton
