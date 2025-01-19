@@ -1,0 +1,72 @@
+@startuml Architecture
+
+skinparam componentStyle uml2
+skinparam component {
+  BackgroundColor<<Web>> LightBlue
+  BackgroundColor<<API>> LightGreen
+  BackgroundColor<<Auth>> Yellow
+  BackgroundColor<<Service>> Orange
+  BackgroundColor<<Queue>> Red
+  BorderColor Black
+}
+
+package "Web Application" <<Web>> {
+  [Frontend App] as frontend
+  [API Client] as apiClient
+  [Auth Client] as authClient
+}
+
+package "API Service" <<API>> {
+  [API Controllers] as apiControllers
+  [Business Services] as apiServices
+  [Repositories] as apiRepos
+  [Event Publisher] as apiEvents
+}
+
+package "Auth Service" <<Auth>> {
+  [Auth API] as authApi
+  [Token Service] as tokenService
+  [User Service] as userService
+}
+
+package "Windows Service" <<Service>> {
+  [Worker Service] as worker
+  [Event Handler] as eventHandler
+  [Scheduled Tasks] as scheduledTasks
+}
+
+package "Message Broker" <<Queue>> {
+  [RabbitMQ] as rabbitmq
+  [Exchanges] as exchanges
+  [Queues] as queues
+}
+
+database "Main Database" as mainDb
+database "Auth Database" as authDb
+
+' Relationships
+frontend --> apiClient
+frontend --> authClient
+apiClient --> apiControllers: HTTP/REST
+authClient --> authApi: HTTP/REST
+
+apiControllers --> apiServices
+apiServices --> apiRepos
+apiServices --> apiEvents
+apiRepos --> mainDb
+
+authApi --> tokenService
+authApi --> userService
+userService --> authDb
+
+apiEvents --> rabbitmq: publishes
+eventHandler --> rabbitmq: subscribes
+
+rabbitmq --> exchanges
+exchanges --> queues
+
+worker --> eventHandler
+worker --> scheduledTasks
+scheduledTasks --> mainDb
+
+@enduml

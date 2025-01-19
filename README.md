@@ -29,6 +29,10 @@ This app aims to empower users with the tools they need to take control of their
 
 ---
 
+### Architecture
+
+![Architecture](./Docs/C4/Architecture.png)
+
 ## Libraries
 
 ### UI
@@ -51,6 +55,14 @@ This app aims to empower users with the tools they need to take control of their
 - AutoMapper
 
 ## Diagrams
+
+### C1
+
+![C1](./Docs/C4/C1.png)
+
+### C2
+
+![C2](./Docs/C4/C2.png)
 
 ### New transaction
 

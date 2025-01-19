@@ -38,7 +38,7 @@ function AuthProvider({ children }: iAuthProvider) {
   );
 
   const [email, setEmail] = useState<string | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
 
   const [accessToken, setAccessToken] = useStorage("accessToken", "");
 

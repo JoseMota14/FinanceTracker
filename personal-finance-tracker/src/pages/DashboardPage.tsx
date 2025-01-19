@@ -6,6 +6,11 @@ import Flip from "../components/Shared/Flip";
 import { AppDispatch, RootState, useGetTransactionsQuery } from "../store";
 import { setTransactions } from "../store/transactions/TransactionsSlice";
 import { notifyError } from "../utils/Notify";
+import {
+  calculateCategorySum,
+  formatCurrency,
+  getCategoryDetails,
+} from "../utils/TransactionUtils/Calc";
 
 const getCard = (title: string, category: string, size: "lg" | "sm") => {
   return <Card title={title} category={category} size={size} variant="grey" />;
@@ -32,23 +37,61 @@ export default function DashboardPage() {
     }
   }, [fetchTransactions, error, dispatch]);
 
-  const foodCard = useMemo(() => getCard("Food expenses", "food", "sm"), []);
-  const clothesCard = useMemo(
-    () => getCard("Clothing expenses", "clothes", "sm"),
-    []
+  // Calculate sums and prepare card content
+  const foodData = useMemo(
+    () => ({
+      sum: calculateCategorySum(transactions, "food"),
+      details: getCategoryDetails(transactions, "food"),
+    }),
+    [transactions]
   );
-  const otherCard = useMemo(() => getCard("Other expenses", "other", "lg"), []);
+
+  const clothesData = useMemo(
+    () => ({
+      sum: calculateCategorySum(transactions, "clothes"),
+      details: getCategoryDetails(transactions, "clothes"),
+    }),
+    [transactions]
+  );
+
+  const otherData = useMemo(
+    () => ({
+      sum: calculateCategorySum(transactions, "other"),
+      details: getCategoryDetails(transactions, "other"),
+    }),
+    [transactions]
+  );
+
+  const clothesCard = useMemo(
+    () => ({
+      front: <div>a</div>,
+      back: formatCurrency(clothesData.sum),
+      details: (
+        <ul>
+          {clothesData.details.map((item, index) => (
+            <li key={index}>
+              {item.date}: {item.value} - {item.description}
+            </li>
+          ))}
+        </ul>
+      ),
+    }),
+    [clothesData]
+  );
 
   return (
     <>
       <Cards>
         <List>
+          <Flip
+            front={clothesCard.front}
+            back={clothesCard.back}
+            details={clothesCard.details}
+          />
           <Flip front={"front"} back={"back"} details={"details"} />
-          <Item>{foodCard}</Item>
-          <Item>{clothesCard}</Item>
         </List>
         <List>
-          <Item>{otherCard}</Item>
+          <Flip front={"front"} back={"back"} details={"details"} />
         </List>
       </Cards>
     </>

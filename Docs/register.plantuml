@@ -1,0 +1,15 @@
+@startuml Register
+actor User
+participant UI
+participant Controller
+participant Service
+participant DB
+
+User -> UI: Inputs email and password
+UI -> Controller: Sends details
+Controller -> Controller: Generate auth credentials
+Controller -> Service: Validates information
+Service => DB: Stores the info 
+Service -> Controller: Respond to the request
+UI -> User: Display the result
+@enduml

@@ -1,0 +1,19 @@
+@startuml C1-Context-Diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Transaction Management System - System Context (C1)
+
+Person(user, "User", "A user who manages and tracks their transactions")
+
+System(transactionSystem, "Transaction Management System", "Allows users to track and categorize transactions, view expenses by category, and manage financial data")
+
+System_Ext(rabbitMq, "RabbitMQ", "Message broker for event streaming")
+System_Ext(authProvider, "Authentication Provider", "External authentication service")
+
+Rel(user, transactionSystem, "Views and manages transactions", "HTTPS")
+Rel(transactionSystem, rabbitMq, "Publishes and consumes events", "AMQP")
+Rel(transactionSystem, authProvider, "Authenticates users", "HTTPS/OAuth2")
+
+@enduml

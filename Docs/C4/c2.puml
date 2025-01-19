@@ -1,0 +1,41 @@
+@startuml C2-Container-Diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Transaction Management System - Container Diagram (C2)
+
+Person(user, "User", "A user who manages and tracks their transactions")
+
+System_Boundary(transactionSystem, "Transaction Management System") {
+    Container(webClient, "Web Application", "React, TypeScript", "Provides transaction management interface to users")
+    
+    Container(apiGateway, "API Service", ".NET", "Handles transaction processing and business logic")
+    
+    Container(authService, "Auth Service", ".NET", "Manages user authentication and authorization")
+    
+    Container(windowsService, "Windows Service", ".NET", "Processes background tasks and handles events")
+    
+    Container(rabbitMq, "RabbitMQ", "Message Broker", "Handles event streaming between services")
+    
+    ContainerDb(transactionDb, "Transaction Database", "SQL Server", "Stores transaction and category data")
+    ContainerDb(authDb, "Auth Database", "SQL Server", "Stores user authentication data")
+}
+
+System_Ext(authProvider, "Authentication Provider", "External authentication service")
+
+' Relationships
+Rel(user, webClient, "Uses", "HTTPS")
+Rel(webClient, apiGateway, "Makes API calls to", "HTTPS/JSON")
+Rel(webClient, authService, "Authenticates using", "HTTPS/JSON")
+
+Rel(apiGateway, transactionDb, "Reads from and writes to", "SQL/TCP")
+Rel(apiGateway, rabbitMq, "Publishes events to", "AMQP")
+
+Rel(authService, authDb, "Reads from and writes to", "SQL/TCP")
+Rel(authService, authProvider, "Validates credentials with", "HTTPS/OAuth2")
+
+Rel(windowsService, rabbitMq, "Subscribes to events from", "AMQP")
+Rel(windowsService, transactionDb, "Reads from and writes to", "SQL/TCP")
+
+@enduml
