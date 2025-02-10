@@ -10,6 +10,8 @@ export const GlobalStyles = createGlobalStyle`
     --text-inactive: ${({ theme }) => theme.colors.inactiveText};
     --button-border: ${({ theme }) => theme.button.borderColor};
     --background-color-fade: ${({ theme }) => theme.colors.backgroundFade};
+    --background-dashboard: ${({ theme }) => theme.colors.dashboardBackground};
+    --dashboard-item: ${({ theme }) => theme.colors.dashboardItem};
     --backfround-color-foreground: ${({ theme }) =>
       theme.colors.backgroundForeground};
     --border-box : ${({ theme }) => theme.colors.border}

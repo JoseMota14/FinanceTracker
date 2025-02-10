@@ -33,12 +33,12 @@ namespace TransactionWebApi.Controllers
                 _logger.LogInformation($"Log for username: {model.Email} with sucess");
                 return Ok(new { Token = ret.Token, RefreshToken = ret.RefreshToken });
             }
-            catch (UnauthorizedException ex)
+            catch (UnauthorizedException)
             {
                 _logger.LogError($"Log for username: {model.Email} with invalid email or password");
                 return Unauthorized("Invalid email or password");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 _logger.LogError($"Log for username: {model.Email} with unexpected error");
                 return BadRequest("Unexpected error");

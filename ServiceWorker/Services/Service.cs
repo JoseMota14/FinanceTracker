@@ -1,11 +1,8 @@
 ﻿using ServiceWorker.Utils;
 using Shared.Bus;
 using Shared.Event;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Shared;
+using ServiceWorker.Variables;
 
 namespace ServiceManager.Services
 {
@@ -20,8 +17,6 @@ namespace ServiceManager.Services
             _eventBus = eventBus;
         }
 
-
-
         public async Task AnalyzeSpendingPatterns()
         {
             _logger.LogInformation("Analyzing spending patterns");
@@ -29,14 +24,23 @@ namespace ServiceManager.Services
 
         public async Task GenerateReports()
         {
+            //Long duration task run at night when the processor its more free
+
             _logger.LogInformation("Analyzing spending patterns");
         }
 
         public async Task ProcessNewTransaction(TransactionCreatedEvent @event)
         {
             _logger.LogInformation("Analyzing spending patterns");
+            ProcessQueue(@event);
             await SendEmail(@event.UserId, "New transaction added", $"Transaction with the value {@event.Amount}");
         }
+
+        private void ProcessQueue(BaseEvent @event)
+        {
+            ContextVariables.Queue.Enqueue((DateTime.Now, @event));
+        }
+
 
         private async Task SendEmail(string toEmail, string subject, string body)
         {

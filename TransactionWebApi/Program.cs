@@ -1,22 +1,18 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.IdentityModel.Tokens;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Compact;
-using System;
-using System.Text;
+using Shared.Infra;
 using TransactionWebApi.Context;
 using TransactionWebApi.DTO;
 using TransactionWebApi.Infra;
 using TransactionWebApi.Infra.Health;
+using TransactionWebApi.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -24,38 +20,8 @@ builder.Services.AddInfrastucture(builder.Configuration);
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+//builder.Host.UseSerilog();
 
-Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-    .MinimumLevel.Override("System", LogEventLevel.Warning)
-    .Enrich.FromLogContext()
-    .Enrich.WithEnvironmentName()
-    .Enrich.WithMachineName()
-    .WriteTo.Console()
-    .WriteTo.File(new CompactJsonFormatter(),
-        path: "logs/log-.txt",
-        rollingInterval: RollingInterval.Day,
-        retainedFileCountLimit: 30)
-    //.WriteTo.Seq("http://localhost:5341")
-    .CreateLogger();
-
-builder.Host.UseSerilog();
-
-//builder.Services.AddOpenTelemetry()
-//    .WithTracing(tracerProviderBuilder =>
-//        tracerProviderBuilder
-//            .AddSource(builder.Environment.ApplicationName)
-//            .SetResourceBuilder(ResourceBuilder
-//                .CreateDefault()
-//                .AddService(builder.Environment.ApplicationName))
-//            .AddAspNetCoreInstrumentation()
-//            .AddHttpClientInstrumentation()
-//            .AddSeqExporter(options =>
-//            {
-//                options.ServerUrl = "http://localhost:5341";
-//                options.ApiKey = "your-api-key"; // Optional
-//            }));
 
 var app = builder.Build();
 
@@ -74,7 +40,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthentication();
-
+app.UseMiddleware<RateLimitingMiddleware>();
 app.UseCors();
 app.UseHttpsRedirection();
 app.MapControllers();

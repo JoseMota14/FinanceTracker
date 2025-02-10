@@ -27,8 +27,8 @@ export const DropdownButton = styled.div`
   background-color: var(--background-color);
   cursor: pointer;
   color: var(--text-color);
-  box-shadow: 0 12px 35px 0 var(--border-box);
-  padding: 10px 20px;
+  box-shadow: 0 1px 5px 0 var(--border-box);
+  padding: 5px 20px;
   z-index: 1; /* Ensure buttons are properly stacked */
   position: relative; /* Maintain stacking context */
 `;

@@ -1,0 +1,12 @@
+﻿<Configs>
+	<Jwt>
+		<Secret>c29tZXZlcnlzdHJvbmdyYW5kb21zZWN1cmluZ3JhbmRvbWtleQ==</Secret>
+		<Issuer>JoseLDA</Issuer>
+		<Audience>every</Audience>
+	</Jwt>
+	<AllowedUrl>http://localhost:3000;http://localhost:3000/</AllowedUrl>
+	<RateLimiting>
+		<MaxRequests>5</MaxRequests>
+		<TimeWindow>10</TimeWindow>
+	</RateLimiting>
+</Configs>

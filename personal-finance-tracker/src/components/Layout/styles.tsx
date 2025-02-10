@@ -1,11 +1,16 @@
 import { styled } from "styled-components";
 
 export const LayoutContainer = styled.div`
-  height: 100%;
+  height: 100vh;
+  overflow: hidden;
+  @media (max-width: 768px) {
+    overflow: visible;
+  }
 `;
 
 export const NavbarWrapper = styled.div`
   height: auto;
+  flex-shrink: 0;
 `;
 
 export const MainContent = styled.main`
@@ -13,7 +18,6 @@ export const MainContent = styled.main`
   width: auto;
 
   @media (max-width: 768px) {
-    margin-left: 1rem;
     padding-bottom: 60px;
     padding-top: 0px;
   }

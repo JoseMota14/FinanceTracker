@@ -3,6 +3,7 @@ import {
   BackCard,
   CardContainer,
   FrontCard,
+  GlowEffect,
   GradientOverlay,
   HiddenCard,
 } from "./styles";
@@ -16,17 +17,13 @@ interface FlipProps {
 export default function Flip({ front, back, details }: FlipProps) {
   return (
     <CardContainer>
-      <FrontCard>
-        <span>{front}</span>
-      </FrontCard>
+      <GlowEffect />
+      <FrontCard>{front}</FrontCard>
+      <BackCard>{back}</BackCard>
 
-      <BackCard>
-        <span>{back}</span>
-      </BackCard>
-
-      <HiddenCard>
+      {/* <HiddenCard>
         <span>{details}</span>
-      </HiddenCard>
+      </HiddenCard> */}
 
       {<GradientOverlay />}
     </CardContainer>
