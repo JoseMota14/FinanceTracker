@@ -80,8 +80,9 @@ export default function DashboardPage() {
   );
 
   return (
-    <Container>
-      <Cards>
+    <Cards>
+      <Li>
+        <Category color={"red"}>Expenses</Category>
         <List>
           <Flip
             front={clothesCard.front}
@@ -90,24 +91,19 @@ export default function DashboardPage() {
           />
           <Flip front={"front"} back={"back"} details={"details"} />
         </List>
+      </Li>
+      <Li>
+        <Category color={"green"}>Incomes</Category>
         <List>
           <Flip front={"front"} back={"back"} details={"details"} />
         </List>
-      </Cards>
-    </Container>
+      </Li>
+    </Cards>
   );
 }
 
-const Container = styled.div`
-  height: 100vh;
-  width: 100vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden; /* Prevents scrolling */
-`;
-
 const Cards = styled.div`
+  height: 100vh;
   background-color: var(--background-dashboard);
   display: flex;
   flex-direction: column;
@@ -115,21 +111,48 @@ const Cards = styled.div`
   justify-content: center;
   gap: 1rem;
   padding: 1.5rem;
-  height: auto;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 `;
 
-const List = styled.li`
-  list-style: none;
+const List = styled.div`
+  height: 25vh;
+  width: 80vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem;
+  border-radius: 8px;
+  background-color: var(--dashboard-item);
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+`;
+
+const Li = styled.div`
+  height: 30vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 1rem;
   border-radius: 8px;
   background-color: var(--dashboard-item);
   transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
-  @media (min-width: 768px) {
-    display: flex;
+`;
 
-    justify-content: space-between;
-    width: 100%;
-  }
+const Category = styled.span<{ color: string }>`
+  height: 5vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem 0.5rem;
+  font-weight: bold;
+  color: white;
+  background-color: ${(props) => props.color};
+  opacity: 0.4;
+  border-radius: 5px;
 `;

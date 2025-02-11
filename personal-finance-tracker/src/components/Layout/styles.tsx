@@ -2,7 +2,7 @@ import { styled } from "styled-components";
 
 export const LayoutContainer = styled.div`
   height: 100vh;
-  overflow: hidden;
+  // overflow: hidden;
   @media (max-width: 768px) {
     overflow: visible;
   }

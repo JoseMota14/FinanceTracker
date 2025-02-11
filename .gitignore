@@ -431,3 +431,6 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/aspnetcore,windows
 .codegpt
+TransactionWebApi/logs20250207
+ServiceWorker/worker/log-20250208.txt
+ServiceWorker/worker/log-20250207.txt
