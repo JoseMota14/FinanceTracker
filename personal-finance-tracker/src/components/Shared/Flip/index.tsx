@@ -7,7 +7,7 @@ interface FlipProps {
   details?: React.ReactNode;
 }
 
-export default function Flip({ front, back, details }: FlipProps) {
+export default function Flip({ front, back }: FlipProps) {
   return (
     <CardContainer>
       <FrontCard>{front}</FrontCard>

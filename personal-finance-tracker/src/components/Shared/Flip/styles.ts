@@ -1,18 +1,16 @@
 import styled from "styled-components";
 export const CardContainer = styled.div`
   position: relative;
-
-  height: 70%;
+  height: 100%;
   width: 100%;
 `;
 export const BaseCard = styled.div`
   position: absolute;
   inset: 0;
-  padding: 1.5rem;
-  border-radius: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 10px;
   transition: all 500ms ease-out;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   span {
