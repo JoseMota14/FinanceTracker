@@ -247,8 +247,7 @@ const Modal = styled.div`
 `;
 const ModalContent = styled.div`
   background-color: white;
-  padding: 20px;
-  border-radius: 8px;
+  border-radius: 10px;
   width: 90%;
   max-width: 400px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);

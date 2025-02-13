@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const Form = styled.form`
   display: flex;
   flex-direction: column;
-  background-color: #fff;
+  background-color: var(--background-dashboard);
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -22,7 +22,7 @@ export const Form = styled.form`
 export const Label = styled.label`
   margin-bottom: 5px;
   font-size: 14px;
-  color: #333;
+  color: var(--text-color);
 
   @media (max-width: 600px) {
     font-size: 13px;
@@ -67,8 +67,8 @@ export const SubmitButton = styled.button`
   outline: none;
 
   border: 1px solid var(--button-border);
-  color: var(--background-color-fade);
-
+  color: var(--text-color);
+  background-color: var(--background-dashboard);
   &:focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
