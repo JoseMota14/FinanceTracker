@@ -4,6 +4,8 @@ using ServiceManager.Services;
 using Quartz;
 using Serilog;
 using ServiceWorker.Utils;
+using ServiceWorker.Pipeline;
+using ServiceWorker.Pipeline.Steps;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext,services) =>
@@ -37,16 +39,27 @@ IHost host = Host.CreateDefaultBuilder(args)
             );
         });
 
+
+
         LoggsExtension.ConfigureLogging(new LogsDefinition() { Path = "worker"});
         services.AddSerilogLogging();
 
         services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
+        //Pipeline 
+        services.AddScoped<IServiceStep, FirstStep>();
+        services.AddScoped<ServicePipeline>();
     })
     .UseSerilog()
     .Build();
 
 var logger = host.Services.GetRequiredService<ILogger<Program>>();
 logger.LogInformation("Service started successfully!");
+
+/*using(var scope = host.Services.CreateScope())
+{
+    await DependencyInject.Startup(scope.ServiceProvider);
+}*/
 
 Initialize.DoJob();
 
